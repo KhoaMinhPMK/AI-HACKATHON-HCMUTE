@@ -54,7 +54,7 @@
     <h1>🔍 Raw API Response Viewer</h1>
     
     <div class="test-section">
-        <h2>Test: sync-user-debug.php (Register with Debug)</h2>
+        <h2>Test: sync-user-simple.php (Register - Simplified)</h2>
         <button onclick="testSyncUser()">Test Register</button>
         <div class="response" id="sync-response"></div>
     </div>
@@ -74,7 +74,7 @@
             responseEl.textContent = 'Loading...';
 
             try {
-                const response = await fetch(`${API_BASE}/auth/sync-user-debug.php`, {
+                const response = await fetch(`${API_BASE}/auth/sync-user-simple.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
