@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firestore Test - Victoria AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 { color: #5cc0eb; margin-bottom: 1rem; }
+        h2 { color: #333; margin: 2rem 0 1rem; font-size: 1.5rem; }
+        .section {
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        button {
+            background: #5cc0eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        button:hover { background: #3da9d4; }
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+        .output {
+            background: #1a1a1a;
+            color: #10B981;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+        .status.error {
+            background: #fee;
+            color: #dc2626;
+            display: block;
+        }
+        .user-info {
+            background: linear-gradient(135deg, #5cc0eb 0%, #B392F0 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firestore Testing Interface</h1>
+        <p>Test Firestore integration cho Victoria AI</p>
+        
+        <div id="userInfo" class="user-info" style="display: none;">
+            <strong>Logged in as:</strong> <span id="userName"></span><br>
+            <strong>Email:</strong> <span id="userEmail"></span><br>
+            <strong>UID:</strong> <span id="userId"></span>
+        </div>
+        
+        <div id="notLoggedIn" class="status error">
+            ⚠️ Bạn chưa đăng nhập! <a href="pages/auth/signin.html">Đăng nhập ngay</a>
+        </div>
+        
+        <div id="statusMessage" class="status"></div>
+        
+        <!-- User Profile Tests -->
+        <h2>👤 User Profile</h2>
+        <div class="section">
+            <button onclick="testGetProfile()">📥 Get Profile</button>
+            <button onclick="testUpdatePreferences()">⚙️ Update Preferences</button>
+            <div id="profileOutput" class="output" style="margin-top: 1rem;"></div>
+        </div>
+        
+        <!-- Chat History Tests -->
+        <h2>💬 Chat History</h2>
+        <div class="section">
+            <h3 style="margin-bottom: 0.5rem;">Send Message:</h3>
+            <select id="messageRole" style="width: auto; padding: 0.5rem; margin-bottom: 0.5rem;">
+                <option value="user">User</option>
+                <option value="ai">AI</option>
+            </select>
+            <textarea id="messageText" placeholder="Nhập nội dung tin nhắn..."></textarea>
+            <button onclick="testSaveMessage()">📤 Send Message</button>
+            <button onclick="testGetHistory()">📜 Get History</button>
+            <button onclick="testClearHistory()">🗑️ Clear History</button>
+            <div id="chatOutput" class="output" style="margin-top: 1rem;"></div>
+        </div>
+        
+        <!-- Raw Firestore Access -->
+        <h2>🔧 Advanced Tests</h2>
+        <div class="section">
+            <button onclick="testDirectWrite()">✍️ Direct Write Test</button>
+            <button onclick="testDirectRead()">📖 Direct Read Test</button>
+            <button onclick="viewAllCollections()">📊 View Collections</button>
+            <div id="advancedOutput" class="output" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+        
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU",
+            authDomain: "victoria-908a3.firebaseapp.com",
+            projectId: "victoria-908a3",
+            storageBucket: "victoria-908a3.firebasestorage.app",
+            messagingSenderId: "906906328836",
+            appId: "1:906906328836:web:b050d66d1b178f03f4fa51",
+            measurementId: "G-DGG9GE81Z7"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null;
+        
+        // Check auth state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('notLoggedIn').style.display = 'none';
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('userName').textContent = user.displayName || 'N/A';
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userId').textContent = user.uid;
+                showStatus('✅ Connected to Firebase!', 'success');
+            } else {
+                document.getElementById('notLoggedIn').style.display = 'block';
+                document.getElementById('userInfo').style.display = 'none';
+            }
+        });
+        
+        // Helper functions
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            setTimeout(() => { status.style.display = 'none'; }, 5000);
+        }
+        
+        function outputResult(elementId, data) {
+            document.getElementById(elementId).textContent = JSON.stringify(data, null, 2);
+        }
+        
+        // Test functions
+        window.testGetProfile = async () => {
+            if (!currentUser) return alert('Please login first');
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                if (userDoc.exists()) {
+                    outputResult('profileOutput', { id: userDoc.id, ...userDoc.data() });
+                    showStatus('✅ Profile loaded!', 'success');
+                } else {
+                    outputResult('profileOutput', { error: 'Profile not found' });
+                    showStatus('⚠️ Profile not found', 'error');
+                }
+            } catch (error) {
+                outputResult('profileOutput', { error: error.message });
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.testUpdatePreferences = async () => {
+            if (!currentUser) return alert('Please login first');
+            try {
+                const userRef = doc(db, 'users', currentUser.uid);
+                await setDoc(userRef, {
+                    preferences: {
+                        theme: 'dark',
+                        language: 'en',
+                        notifications: true,
+                        testMode: true
+                    },
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                
+                showStatus('✅ Preferences updated!', 'success');
+                await testGetProfile();
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.testSaveMessage = async () => {
+            if (!currentUser) return alert('Please login first');
+            const role = document.getElementById('messageRole').value;
+            const text = document.getElementById('messageText').value;
+            
+            if (!text.trim()) return alert('Message cannot be empty');
+            
+            try {
+                const messagesRef = collection(db, 'users', currentUser.uid, 'chatHistory');
+                await setDoc(doc(messagesRef), {
+                    role: role,
+                    text: text,
+                    timestamp: serverTimestamp()
+                });
+                
+                document.getElementById('messageText').value = '';
+                showStatus('✅ Message saved!', 'success');
+                await testGetHistory();
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.testGetHistory = async () => {
+            if (!currentUser) return alert('Please login first');
+            try {
+                const messagesRef = collection(db, 'users', currentUser.uid, 'chatHistory');
+                const snapshot = await getDocs(messagesRef);
+                
+                const messages = [];
+                snapshot.forEach(doc => {
+                    messages.push({ id: doc.id, ...doc.data() });
+                });
+                
+                outputResult('chatOutput', messages);
+                showStatus(`✅ Loaded ${messages.length} messages`, 'success');
+            } catch (error) {
+                outputResult('chatOutput', { error: error.message });
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.testClearHistory = async () => {
+            if (!currentUser) return alert('Please login first');
+            if (!confirm('Clear all chat history?')) return;
+            
+            try {
+                const messagesRef = collection(db, 'users', currentUser.uid, 'chatHistory');
+                const snapshot = await getDocs(messagesRef);
+                
+                const deletePromises = [];
+                snapshot.forEach(doc => {
+                    deletePromises.push(deleteDoc(doc.ref));
+                });
+                
+                await Promise.all(deletePromises);
+                showStatus('✅ History cleared!', 'success');
+                await testGetHistory();
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.testDirectWrite = async () => {
+            if (!currentUser) return alert('Please login first');
+            try {
+                const testRef = doc(db, 'users', currentUser.uid, 'tests', 'testDoc');
+                await setDoc(testRef, {
+                    testField: 'Hello Firestore!',
+                    timestamp: serverTimestamp(),
+                    randomNumber: Math.floor(Math.random() * 1000)
+                });
+                
+                outputResult('advancedOutput', { success: true, message: 'Write successful!' });
+                showStatus('✅ Direct write successful!', 'success');
+            } catch (error) {
+                outputResult('advancedOutput', { error: error.message });
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.testDirectRead = async () => {
+            if (!currentUser) return alert('Please login first');
+            try {
+                const testDoc = await getDoc(doc(db, 'users', currentUser.uid, 'tests', 'testDoc'));
+                if (testDoc.exists()) {
+                    outputResult('advancedOutput', { id: testDoc.id, ...testDoc.data() });
+                    showStatus('✅ Direct read successful!', 'success');
+                } else {
+                    outputResult('advancedOutput', { message: 'No test document found. Run Direct Write first.' });
+                }
+            } catch (error) {
+                outputResult('advancedOutput', { error: error.message });
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        window.viewAllCollections = async () => {
+            if (!currentUser) return alert('Please login first');
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                const chatHistory = await getDocs(collection(db, 'users', currentUser.uid, 'chatHistory'));
+                
+                const result = {
+                    userProfile: userDoc.exists() ? userDoc.data() : null,
+                    chatHistoryCount: chatHistory.size,
+                    collections: ['users', 'chatHistory']
+                };
+                
+                outputResult('advancedOutput', result);
+                showStatus('✅ Collections viewed!', 'success');
+            } catch (error) {
+                outputResult('advancedOutput', { error: error.message });
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        };
+    </script>
+</body>
+</html>

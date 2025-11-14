@@ -48,6 +48,103 @@ document.querySelectorAll('section').forEach(section => {
     observer.observe(section);
 });
 
+// Animate steps on scroll
+const stepObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-visible');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.step').forEach(step => {
+    stepObserver.observe(step);
+});
+
+// Animated Counter for Statistics Section (Elegant Style)
+function animateCounter(element) {
+    const target = parseFloat(element.getAttribute('data-target'));
+    const duration = 2000; // 2 seconds
+    const increment = target / (duration / 16); // 60fps
+    let current = 0;
+    
+    const updateCounter = () => {
+        current += increment;
+        if (current < target) {
+            // Handle decimals for numbers like 2.5
+            if (target < 10 && target % 1 !== 0) {
+                element.textContent = current.toFixed(1);
+            } else {
+                element.textContent = Math.floor(current);
+            }
+            requestAnimationFrame(updateCounter);
+        } else {
+            // Final value
+            if (target < 10 && target % 1 !== 0) {
+                element.textContent = target.toFixed(1);
+            } else {
+                element.textContent = Math.floor(target);
+            }
+        }
+    };
+    
+    updateCounter();
+}
+
+// Observe statistics section (Elegant Cards)
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const numbers = entry.target.querySelectorAll('.stat-number');
+            numbers.forEach((num, index) => {
+                setTimeout(() => {
+                    animateCounter(num);
+                }, index * 150); // Stagger animation
+            });
+            statsObserver.unobserve(entry.target); // Only animate once
+        }
+    });
+}, {
+    threshold: 0.3
+});
+
+const statsSection = document.querySelector('.statistics-section');
+if (statsSection) {
+    statsObserver.observe(statsSection);
+}
+
+// Elegant Card Hover Effects
+document.querySelectorAll('.stat-elegant-card, .use-case-elegant-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        card.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    });
+});
+
+const stepsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const steps = entry.target.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.style.opacity = '1';
+                    step.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        }
+    });
+}, { threshold: 0.2 });
+
+const stepsContainer = document.querySelector('.steps-container');
+if (stepsContainer) {
+    // Initialize steps hidden
+    document.querySelectorAll('.step').forEach(step => {
+        step.style.opacity = '0';
+        step.style.transform = 'translateY(40px)';
+        step.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    });
+    stepsObserver.observe(stepsContainer);
+}
+
 // Chatbot functionality
 document.addEventListener('DOMContentLoaded', () => {
     const chatbot = document.querySelector('.chatbot');
@@ -193,4 +290,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     windowEl.setAttribute('aria-hidden', 'true');
+});
+
+// ============================================
+// 3D Tilt Effect for Tech Cards
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    const techCards = document.querySelectorAll('[data-tilt]');
+    
+    techCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * 8; // Max 8 degrees
+            const rotateY = ((centerX - x) / centerX) * 8;
+            
+            card.style.transform = `
+                translateY(-12px) 
+                rotateX(${rotateX}deg) 
+                rotateY(${rotateY}deg)
+                scale(1.02)
+            `;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) rotateX(0) rotateY(0) scale(1)';
+        });
+    });
+    
+    // Enhanced particle animation trigger
+    const techSection = document.querySelector('.tech-stack');
+    if (techSection) {
+        const techObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        techObserver.observe(techSection);
+    }
 });

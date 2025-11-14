@@ -1,0 +1,121 @@
+/* ============================================
+   Auth Form Pages
+   (Sign In, Register, Forgot Password)
+   ============================================ */
+
+.auth-form-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 8rem);
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f0fffe 0%, #e0ffed 100%);
+}
+
+/* Auth Container */
+.auth-container {
+    width: 100%;
+    max-width: 500px;
+    background: var(--white);
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.12);
+}
+
+/* Auth Header */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+    font-size: 2.4rem;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    font-size: 1.4rem;
+    color: var(--light-color);
+}
+
+/* Auth Form */
+.auth-form {
+    margin-bottom: 2rem;
+}
+
+.auth-form .form-group {
+    margin-bottom: 1.6rem;
+}
+
+.auth-form .form-group label {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--black);
+}
+
+.auth-form .form-group input {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    border: 2px solid var(--bg-color);
+    border-radius: 0.8rem;
+    transition: border-color .3s ease;
+}
+
+.auth-form .form-group input:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 3px rgba(27,117,107,0.1);
+}
+
+/* Full Width Button */
+.btn-full {
+    width: 100%;
+    padding: 1.1rem 2rem;
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Auth Links */
+.auth-links {
+    text-align: center;
+    font-size: 1.3rem;
+    color: var(--light-color);
+}
+
+.auth-links > div {
+    margin-bottom: 0.8rem;
+}
+
+.auth-links a {
+    color: var(--main-color);
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color .2s ease;
+}
+
+.auth-links a:hover {
+    color: #145c50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-form-section {
+        min-height: calc(100vh - 6rem);
+        padding: 2rem 1rem;
+    }
+
+    .auth-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .auth-header h1 {
+        font-size: 2rem;
+    }
+
+    .auth-header p {
+        font-size: 1.3rem;
+    }
+}

@@ -1,0 +1,79 @@
+/* ============================================
+   CSS Variables - Design System
+   ============================================ */
+
+:root {
+    /* Custom Color System - #5cc0eb */
+    --main-color: #5cc0eb;
+    --main-color-hover: #3da9d4;
+    --main-color-light: rgba(92, 192, 235, 0.1);
+    
+    /* Purple Pastel Accent */
+    --accent-purple: #B392F0;
+    --accent-purple-light: #DDD6FE;
+    --accent-purple-bg: rgba(179, 146, 240, 0.08);
+    
+    /* Blue Gradient */
+    --gradient-primary: linear-gradient(135deg, #5cc0eb 0%, #3da9d4 100%);
+    --gradient-accent: linear-gradient(135deg, #5cc0eb 0%, #B392F0 100%);
+    --gradient-soft: linear-gradient(135deg, #E8F6FC 0%, #F3E5F5 100%);
+    
+    /* Text Colors */
+    --black: #24292F;
+    --text-primary: #24292F;
+    --text-secondary: #57606A;
+    --text-tertiary: #8B949E;
+    
+    /* Background Colors */
+    --white: #ffffff;
+    --light-bg: #E8F6FC;
+    --bg-color: #F6F8FA;
+    --bg-elevated: #FFFFFF;
+    --bg-purple-light: #F3E5F5;
+    
+    /* Glass Morphism */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(92, 192, 235, 0.12);
+    
+    /* Shadows */
+    --shadow-xs: 0 1px 3px rgba(92, 192, 235, 0.04);
+    --shadow-sm: 0 2px 8px rgba(92, 192, 235, 0.06);
+    --shadow-md: 0 4px 16px rgba(92, 192, 235, 0.08);
+    --shadow-lg: 0 8px 32px rgba(92, 192, 235, 0.1);
+    --shadow-xl: 0 16px 48px rgba(92, 192, 235, 0.12);
+    
+    /* Accent Shadows */
+    --shadow-color: 0 4px 24px rgba(92, 192, 235, 0.15);
+    --shadow-color-lg: 0 8px 32px rgba(92, 192, 235, 0.2);
+    --shadow-purple: 0 4px 24px rgba(179, 146, 240, 0.15);
+    
+    /* Spacing System (8pt grid) */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 32px;
+    --spacing-xl: 48px;
+    --spacing-2xl: 64px;
+    --spacing-3xl: 80px;
+    --spacing-4xl: 120px;
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Transitions (Apple's timing) */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    /* Legacy (for compatibility) */
+    --light-color: #57606A;
+    --light-white: rgba(255,255,255,.3);
+    --box-shadow: var(--shadow-md);
+    --border: 1px solid rgba(0,0,0,.08);
+}

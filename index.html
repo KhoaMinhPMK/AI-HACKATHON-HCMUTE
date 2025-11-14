@@ -6,16 +6,15 @@
     <title>VICTORIA AI | AI-Powered Hackathon Solution</title>
     <meta name="description" content="Giải pháp AI toàn diện với Machine Learning và Deep Learning tiên tiến">
     
-    <!-- Modular CSS Architecture -->
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="styles.css">
+    <!-- Modular CSS Architecture - Complete -->
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
 <!-- Header -->
 <header class="header">
     <div class="logo">
-        <img src="../assets/logo_cropped.png" alt="Logo">
+        <img src="assets/logo_cropped.png" alt="Logo">
         <span class="logo-text">VICTORIA AI</span>
     </div>
     <nav class="menu">
@@ -26,7 +25,7 @@
         <a href="#contact">Contact</a>
     </nav>
     <div class="header-actions">
-        <a href="auth/signin.html" class="btn btn-outline">Sign In</a>
+        <a href="pages/auth/signin.html" class="btn btn-outline">Sign In</a>
         <button class="btn">Get Started</button>
     </div>
     
@@ -225,120 +224,163 @@
     </div>
 </section>
 
-<!-- How It Works Section -->
-<section class="how-it-works" id="how">
-    <div class="container">
+<!-- Statistics Section -->
+<section class="statistics-section" id="stats">
+    <div class="stats-container">
         <div class="section-header">
-            <h2>Cách Hoạt Động</h2>
-            <p>Quy trình đơn giản 3 bước</p>
+            <span class="section-badge">Performance</span>
+            <h2>Hiệu Suất Vượt Trội</h2>
+            <p>Những con số ấn tượng từ công nghệ AI tiên tiến</p>
         </div>
-        <div class="steps-container">
-            <div class="step">
-                <div class="step-number">1</div>
-                <h3>Bước 1</h3>
-                <p>Mô tả bước đầu tiên trong quy trình sử dụng sản phẩm.</p>
+        
+        <div class="stats-elegant-grid">
+            <div class="stat-elegant-card">
+                <div class="stat-elegant-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div class="stat-elegant-content">
+                    <div class="stat-elegant-number">
+                        <span class="stat-number" data-target="98">0</span>
+                        <span class="stat-unit">%</span>
+                    </div>
+                    <h3>Độ Chính Xác</h3>
+                    <p>Độ chính xác của mô hình AI trong nhận diện hình ảnh trên tập test</p>
+                </div>
+                <div class="stat-elegant-bg"></div>
             </div>
-            <div class="step-arrow">→</div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <h3>Bước 2</h3>
-                <p>Mô tả bước thứ hai, nêu rõ what happens automatically.</p>
+
+            <div class="stat-elegant-card">
+                <div class="stat-elegant-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="stat-elegant-content">
+                    <div class="stat-elegant-number">
+                        <span class="stat-number" data-target="2.5">0</span>
+                        <span class="stat-unit">s</span>
+                    </div>
+                    <h3>Thời Gian Xử Lý</h3>
+                    <p>Thời gian trung bình để xử lý và phân tích một hình ảnh</p>
+                </div>
+                <div class="stat-elegant-bg stat-elegant-bg--purple"></div>
             </div>
-            <div class="step-arrow">→</div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <h3>Bước 3</h3>
-                <p>Mô tả bước cuối cùng, nêu kết quả final users nhận được.</p>
+
+            <div class="stat-elegant-card">
+                <div class="stat-elegant-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="stat-elegant-content">
+                    <div class="stat-elegant-number">
+                        <span class="stat-number" data-target="15">0</span>
+                        <span class="stat-unit">+</span>
+                    </div>
+                    <h3>Loại Ảnh Hỗ Trợ</h3>
+                    <p>Số lượng định dạng ảnh được hỗ trợ (JPG, PNG, WebP, TIFF...)</p>
+                </div>
+                <div class="stat-elegant-bg stat-elegant-bg--green"></div>
+            </div>
+
+            <div class="stat-elegant-card">
+                <div class="stat-elegant-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="stat-elegant-content">
+                    <div class="stat-elegant-number">
+                        <span class="stat-number" data-target="5">0</span>
+                        <span class="stat-unit">M</span>
+                    </div>
+                    <h3>Tham Số Model</h3>
+                    <p>Số lượng tham số của deep learning model được training</p>
+                </div>
+                <div class="stat-elegant-bg stat-elegant-bg--gold"></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Pricing Section -->
-<section class="pricing" id="pricing">
+<!-- Use Cases Section -->
+<section class="use-cases-elegant" id="use-cases">
     <div class="container">
         <div class="section-header">
-            <h2>Bảng Giá</h2>
-            <p>Chọn gói dịch vụ phù hợp với nhu cầu của bạn</p>
+            <span class="section-badge">Applications</span>
+            <h2>Ứng Dụng Thực Tế</h2>
+            <p>Giải pháp AI cho mọi lĩnh vực</p>
         </div>
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <h3>Starter</h3>
-                <div class="price">Miễn Phí</div>
-                <ul class="features-list">
-                    <li>✓ Tính năng cơ bản</li>
-                    <li>✓ Hỗ trợ cộng đồng</li>
-                    <li>✓ Truy cập giới hạn</li>
-                    <li>✗ Hỗ trợ ưu tiên</li>
-                </ul>
-                <button class="btn btn-outline">Chọn</button>
-            </div>
-            <div class="pricing-card featured">
-                <div class="badge">Nên Chọn</div>
-                <h3>Professional</h3>
-                <div class="price">$9.99<span>/tháng</span></div>
-                <ul class="features-list">
-                    <li>✓ Tất cả tính năng</li>
-                    <li>✓ API access</li>
-                    <li>✓ Email support</li>
-                    <li>✓ Hỗ trợ ưu tiên</li>
-                </ul>
-                <button class="btn">Chọn</button>
-            </div>
-            <div class="pricing-card">
-                <h3>Enterprise</h3>
-                <div class="price">Tuỳ chỉnh</div>
-                <ul class="features-list">
-                    <li>✓ Custom solutions</li>
-                    <li>✓ Hỗ trợ 24/7</li>
-                    <li>✓ Dedicated account</li>
-                    <li>✓ Training included</li>
-                </ul>
-                <button class="btn btn-outline">Liên Hệ</button>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Testimonials Section -->
-<section class="testimonials">
-    <div class="container">
-        <div class="section-header">
-            <h2>Đánh Giá Từ Người Dùng</h2>
-            <p>Feedback từ những người đã sử dụng</p>
-        </div>
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p>"Sản phẩm này thay đổi cách tôi làm việc. Rất dễ sử dụng và hiệu quả!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">👤</div>
-                    <div>
-                        <h4>Khách Hàng A</h4>
-                        <p>CEO, Công ty X</p>
+        <div class="use-cases-elegant-grid">
+            <!-- Healthcare -->
+            <div class="use-case-elegant-card use-case-elegant-card--large">
+                <div class="use-case-elegant-visual">
+                    <div class="use-case-elegant-icon use-case-elegant-icon--blue">
+                        <i class="fas fa-heartbeat"></i>
                     </div>
+                    <div class="use-case-elegant-pattern"></div>
+                </div>
+                <div class="use-case-elegant-content">
+                    <span class="use-case-elegant-label">Healthcare</span>
+                    <h3>Y Tế & Chăm Sóc Sức Khỏe</h3>
+                    <p>AI có thể hỗ trợ phân tích hình ảnh y tế như X-Ray, CT Scan để hỗ trợ bác sĩ trong việc chẩn đoán và phát hiện sớm các bệnh lý.</p>
+                    <ul class="use-case-elegant-features">
+                        <li>Phân tích X-Ray & CT Scan</li>
+                        <li>Phát hiện bất thường trong ảnh y tế</li>
+                        <li>Hỗ trợ chẩn đoán nhanh chóng</li>
+                    </ul>
                 </div>
             </div>
-            <div class="testimonial-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p>"Giải pháp tuyệt vời, tối ưu hoá quy trình của chúng tôi rất nhiều."</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">👤</div>
-                    <div>
-                        <h4>Khách Hàng B</h4>
-                        <p>Manager, Công ty Y</p>
+
+            <!-- Manufacturing -->
+            <div class="use-case-elegant-card">
+                <div class="use-case-elegant-visual">
+                    <div class="use-case-elegant-icon use-case-elegant-icon--purple">
+                        <i class="fas fa-industry"></i>
                     </div>
+                    <div class="use-case-elegant-pattern"></div>
+                </div>
+                <div class="use-case-elegant-content">
+                    <span class="use-case-elegant-label use-case-elegant-label--purple">Manufacturing</span>
+                    <h3>Kiểm Tra Chất Lượng Sản Xuất</h3>
+                    <p>Computer vision có thể tự động kiểm tra lỗi sản phẩm trên dây chuyền sản xuất.</p>
+                    <ul class="use-case-elegant-features">
+                        <li>Kiểm tra QC tự động</li>
+                        <li>Phát hiện lỗi sản xuất</li>
+                    </ul>
                 </div>
             </div>
-            <div class="testimonial-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p>"Đội ngũ hỗ trợ xuất sắc, luôn sẵn sàng giúp đỡ khi cần."</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">👤</div>
-                    <div>
-                        <h4>Khách Hàng C</h4>
-                        <p>Founder, Startup Z</p>
+
+            <!-- Security -->
+            <div class="use-case-elegant-card">
+                <div class="use-case-elegant-visual">
+                    <div class="use-case-elegant-icon use-case-elegant-icon--green">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
+                    <div class="use-case-elegant-pattern"></div>
+                </div>
+                <div class="use-case-elegant-content">
+                    <span class="use-case-elegant-label use-case-elegant-label--green">Security</span>
+                    <h3>An Ninh & Giám Sát Thông Minh</h3>
+                    <p>AI có thể nhận diện khuôn mặt và phát hiện hành vi bất thường qua camera giám sát.</p>
+                    <ul class="use-case-elegant-features">
+                        <li>Nhận diện khuôn mặt</li>
+                        <li>Phân tích hành vi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- E-commerce -->
+            <div class="use-case-elegant-card use-case-elegant-card--featured">
+                <div class="use-case-elegant-visual">
+                    <div class="use-case-elegant-icon use-case-elegant-icon--pink">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="use-case-elegant-pattern"></div>
+                </div>
+                <div class="use-case-elegant-content">
+                    <span class="use-case-elegant-label use-case-elegant-label--pink">E-commerce</span>
+                    <h3>Tìm Kiếm Bằng Hình Ảnh</h3>
+                    <p>Công nghệ visual search cho phép tìm kiếm sản phẩm bằng cách upload ảnh thay vì dùng từ khóa.</p>
+                    <ul class="use-case-elegant-features">
+                        <li>Tìm kiếm sản phẩm qua ảnh</li>
+                        <li>Gợi ý sản phẩm tương tự</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -350,61 +392,6 @@
     <h2>Bắt Đầu Ngay Hôm Nay</h2>
     <p>Không cần phí đăng ký, bắt đầu với gói miễn phí của chúng tôi!</p>
     <button class="btn btn-large">Khám Phá Ngay</button>
-</section>
-
-<!-- Demo/Test Section -->
-<section class="upload-section" id="process">
-    <div class="container">
-        <h2>Thử Nghiệm Ngay</h2>
-        <form id="upload-form" class="upload-form">
-            <div class="form-group">
-                <label for="user-input">Nhập dữ liệu hoặc upload file:</label>
-                <input type="text" id="user-input" placeholder="Nhập text, URL hoặc dữ liệu cần xử lý" required>
-            </div>
-            <button type="submit" class="btn">Xử Lý</button>
-        </form>
-    </div>
-</section>
-
-<!-- Results Section -->
-<section id="results-section" class="results-section" style="display:none;">
-    <div class="container">
-        <h2>Kết Quả</h2>
-        
-        <div class="images-grid">
-            <div class="image-item">
-                <h3>Kết Quả 1</h3>
-                <img id="img1" src="" alt="Result 1">
-                <a href="" download class="download-btn">Tải Về</a>
-            </div>
-            <div class="image-item">
-                <h3>Kết Quả 2</h3>
-                <img id="img2" src="" alt="Result 2">
-                <a href="" download class="download-btn">Tải Về</a>
-            </div>
-            <div class="image-item">
-                <h3>Kết Quả 3</h3>
-                <img id="img3" src="" alt="Result 3">
-                <a href="" download class="download-btn">Tải Về</a>
-            </div>
-            <div class="image-item">
-                <h3>Kết Quả 4</h3>
-                <img id="img4" src="" alt="Result 4">
-                <a href="" download class="download-btn">Tải Về</a>
-            </div>
-            <div class="image-item">
-                <h3>Kết Quả 5</h3>
-                <img id="img5" src="" alt="Result 5">
-                <a href="" download class="download-btn">Tải Về</a>
-            </div>
-        </div>
-
-        <div class="preview-section">
-            <h3>Tóm Tắt Kết Quả</h3>
-            <img id="preview-all" src="" alt="Preview" class="preview-img">
-            <a href="" download class="download-btn">Tải Preview</a>
-        </div>
-    </div>
 </section>
 
 <!-- Sign-in handled on separate page (signin/signin.html) -->
@@ -470,12 +457,13 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 YourProject. Hackathon Solution. All rights reserved.</p>
+            <p>&copy; 2025 VICTORIA AI. Hackathon Solution. All rights reserved.</p>
         </div>
     </div>
 </footer>
 
-<script src="script.js"></script>
+<script src="pages/script.js"></script>
 
 </body>
+</html>
 </html>

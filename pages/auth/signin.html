@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - Victoria AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-page">
+        <a href="../../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            <span>Quay về trang chủ</span>
+        </a>
+
+        <div class="auth-container">
+            <div class="auth-brand">
+                <img src="../../assets/logo_cropped.png" alt="Victoria AI Logo" class="auth-logo">
+                <h1>Victoria AI</h1>
+            </div>
+            
+            <div class="auth-header">
+                <h2>Chào mừng trở lại</h2>
+                <p>Đăng nhập để tiếp tục sử dụng Victoria AI</p>
+            </div>
+            
+            <form class="auth-form" id="signinForm">
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="example@email.com" 
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Mật Khẩu
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="••••••••" 
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    Đăng Nhập
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span>hoặc đăng nhập với</span>
+            </div>
+            
+            <div class="social-login">
+                <button type="button" class="btn-social btn-google">
+                    <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    <span>Tiếp tục với Google</span>
+                </button>
+            </div>
+            
+            <div class="auth-footer">
+                <a href="forgot-password.html" class="link-secondary">Quên mật khẩu?</a>
+            </div>
+            
+            <div class="auth-register">
+                <span>Chưa có tài khoản?</span>
+                <a href="register.html" class="link-primary">Đăng ký ngay</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU",
+            authDomain: "victoria-908a3.firebaseapp.com",
+            projectId: "victoria-908a3",
+            storageBucket: "victoria-908a3.firebasestorage.app",
+            messagingSenderId: "906906328836",
+            appId: "1:906906328836:web:b050d66d1b178f03f4fa51",
+            measurementId: "G-DGG9GE81Z7"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+        
+        // Save user profile to Firestore
+        async function saveUserProfile(user) {
+            try {
+                await setDoc(doc(db, 'users', user.uid), {
+                    displayName: user.displayName || 'User',
+                    email: user.email,
+                    photoURL: user.photoURL || null,
+                    emailVerified: user.emailVerified,
+                    lastLogin: serverTimestamp(),
+                    authProvider: user.providerData[0]?.providerId || 'unknown'
+                }, { merge: true });
+                console.log('✅ User profile saved to Firestore');
+            } catch (error) {
+                // Firestore not setup yet - skip silently
+                console.warn('⚠️ Firestore not available (app works without it)');
+                if (error.code === 'permission-denied') {
+                    console.info('💡 Setup Firestore: https://console.firebase.google.com');
+                }
+            }
+        }
+        
+        // Email/Password Login
+        const form = document.getElementById('signinForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('btn-loading');
+            
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                // Save profile to Firestore
+                await saveUserProfile(user);
+                
+                // Show success message
+                const message = document.createElement('div');
+                message.className = 'message message-success';
+                message.innerHTML = '<i class="fas fa-check-circle"></i> Đăng nhập thành công! Đang chuyển hướng...';
+                form.insertBefore(message, form.firstChild);
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = '../dashboard/index.html';
+                }, 1500);
+                
+            } catch (error) {
+                // Show error
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('btn-loading');
+                
+                let errorMessage = 'Đăng nhập thất bại. Vui lòng thử lại!';
+                
+                switch(error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = 'Email không hợp lệ!';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'Tài khoản đã bị vô hiệu hóa!';
+                        break;
+                    case 'auth/user-not-found':
+                        errorMessage = 'Không tìm thấy tài khoản với email này!';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Mật khẩu không đúng!';
+                        break;
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Email hoặc mật khẩu không đúng!';
+                        break;
+                }
+                
+                const message = document.createElement('div');
+                message.className = 'message message-error';
+                message.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`;
+                form.insertBefore(message, form.firstChild);
+                
+                setTimeout(() => message.remove(), 5000);
+            }
+        });
+        
+        // Google Sign-In
+        document.querySelector('.btn-google').addEventListener('click', async function() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                
+                console.log('Google login successful:', user);
+                
+                // Save profile to Firestore
+                await saveUserProfile(user);
+                
+                // Show success and redirect
+                const message = document.createElement('div');
+                message.className = 'message message-success';
+                message.innerHTML = `<i class="fas fa-check-circle"></i> Chào mừng ${user.displayName}! Đang chuyển hướng...`;
+                document.querySelector('.auth-container').insertBefore(message, document.querySelector('.auth-brand').nextSibling);
+                
+                setTimeout(() => {
+                    window.location.href = '../dashboard/index.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Google login error:', error);
+
+                
+                let errorMessage = 'Đăng nhập Google thất bại!';
+                
+                switch(error.code) {
+                    case 'auth/popup-closed-by-user':
+                        errorMessage = 'Bạn đã đóng cửa sổ đăng nhập.';
+                        break;
+                    case 'auth/cancelled-popup-request':
+                        return; // Don't show error
+                    case 'auth/popup-blocked':
+                        errorMessage = 'Popup bị chặn. Vui lòng cho phép popup!';
+                        break;
+                }
+                
+                alert(errorMessage);
+            }
+        });
+    </script>
+</body>
+</html>

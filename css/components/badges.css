@@ -1,0 +1,62 @@
+/* ============================================
+   Badge Components
+   ============================================ */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-base);
+}
+
+.badge-primary {
+    background: var(--gradient-primary);
+    color: var(--white);
+    box-shadow: var(--shadow-color);
+}
+
+.badge-purple {
+    background: var(--gradient-accent);
+    color: var(--white);
+    box-shadow: var(--shadow-purple);
+}
+
+.badge-outline {
+    background: transparent;
+    color: var(--main-color);
+    border: 2px solid var(--main-color);
+}
+
+.badge-success {
+    background: linear-gradient(135deg, #56C596, #A8E6CF);
+    color: var(--white);
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: var(--white);
+}
+
+.badge-error {
+    background: linear-gradient(135deg, #FF6B9D, #FFA07A);
+    color: var(--white);
+}
+
+/* Animated Badges */
+.badge-pulse {
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(92, 192, 235, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(92, 192, 235, 0.5);
+    }
+}

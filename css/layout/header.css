@@ -1,0 +1,168 @@
+/* ============================================
+   Header Component - Dynamic Pill Navigation
+   ============================================ */
+
+.header {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: calc(100% - 80px);
+    max-width: 1400px;
+    background: var(--glass-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-lg);
+    z-index: 1200;
+    transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    animation: headerEnter 0.35s ease both;
+}
+
+@keyframes headerEnter {
+    from { 
+        transform: translateY(-8px); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}
+
+/* Scrolled state - Compact pill */
+.header.header--scrolled {
+    top: 16px;
+    width: auto;
+    min-width: 500px;
+    max-width: 600px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: var(--shadow-xl);
+    backdrop-filter: saturate(180%) blur(24px);
+}
+
+.header.header--scrolled .menu {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    overflow: hidden;
+}
+
+.header.header--scrolled .logo-text {
+    font-size: 1.8rem;
+}
+
+.header.header--scrolled .logo img {
+    height: 38px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+}
+
+.logo img {
+    height: 42px;
+    width: auto;
+    display: block;
+    transition: all var(--transition-smooth);
+    will-change: transform;
+}
+
+.logo-text {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--main-color);
+    letter-spacing: -0.02em;
+    transition: all var(--transition-smooth);
+}
+
+.logo:hover img {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 12px rgba(92, 192, 235, 0.2));
+}
+
+.logo:hover .logo-text {
+    color: var(--main-color-hover);
+}
+
+/* Navigation Menu */
+.menu {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+    transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: 1;
+}
+
+.menu a {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: all var(--transition-base);
+    position: relative;
+    padding: 8px 0;
+    white-space: nowrap;
+}
+
+.menu a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 80%;
+    height: 2px;
+    background: var(--main-color);
+    border-radius: 2px;
+    transition: transform var(--transition-smooth);
+}
+
+.menu a:hover {
+    color: var(--main-color);
+}
+
+.menu a:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+/* Header Actions */
+.header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .header.header--scrolled {
+        padding: 0.6rem 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        width: calc(100% - 40px);
+        padding: 12px 20px;
+    }
+    
+    .menu {
+        display: none;
+    }
+    
+    .header.header--scrolled {
+        min-width: unset;
+        width: calc(100% - 40px);
+    }
+}

@@ -1,0 +1,95 @@
+/* ============================================
+   Testimonials Section - Card Style
+   ============================================ */
+
+.testimonials {
+    padding: var(--spacing-4xl) var(--spacing-md);
+    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+/* Testimonial Card */
+.testimonial-card {
+    background: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-smooth);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    animation: fadeInUp 0.6s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Stars Rating */
+.stars {
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-md);
+    color: #ffa500;
+}
+
+/* Quote Text */
+.testimonial-card p {
+    font-size: 1.6rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+    font-style: italic;
+    letter-spacing: -0.01em;
+}
+
+/* Author Section */
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.author-avatar {
+    font-size: 3.2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--main-color-light);
+    border-radius: 50%;
+}
+
+.testimonial-author h4 {
+    font-size: 1.6rem;
+    color: var(--text-primary);
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.testimonial-author p {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin: 0;
+    font-style: normal;
+}
+
+/* Stagger Animations */
+.testimonial-card:nth-child(1) { animation-delay: 0.1s; }
+.testimonial-card:nth-child(2) { animation-delay: 0.2s; }
+.testimonial-card:nth-child(3) { animation-delay: 0.3s; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+}

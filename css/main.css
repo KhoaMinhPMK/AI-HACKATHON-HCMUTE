@@ -1,0 +1,74 @@
+/* ============================================
+   VICTORIA AI - Main Stylesheet
+   Modular CSS Architecture
+   ============================================ */
+
+/* Base Styles */
+@import url('./base/variables.css');
+@import url('./base/reset.css');
+@import url('./base/typography.css');
+
+/* Layout Components */
+@import url('./layout/header.css');
+@import url('./layout/footer.css');
+@import url('./layout/grid.css');
+
+/* UI Components */
+@import url('./components/buttons.css');
+@import url('./components/cards.css');
+@import url('./components/forms.css');
+@import url('./components/badges.css');
+
+/* Page Sections */
+@import url('./sections/shared.css');
+@import url('./sections/hero.css');
+@import url('./sections/features.css');
+@import url('./sections/how-it-works.css');
+@import url('./sections/tech-stack.css');
+@import url('./sections/partners.css');
+@import url('./sections/statistics.css');
+@import url('./sections/use-cases.css');
+@import url('./sections/pricing.css');
+@import url('./sections/testimonials.css');
+@import url('./sections/cta.css');
+@import url('./sections/upload.css');
+@import url('./sections/chatbot.css');
+@import url('./sections/auth.css');
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+.p-xs { padding: var(--spacing-xs); }
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-xl { padding: var(--spacing-xl); }
+
+/* Flexbox Utilities */
+.flex { display: flex; }
+.flex-column { flex-direction: column; }
+.flex-center { align-items: center; justify-content: center; }
+.flex-between { justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+.gap-lg { gap: var(--spacing-lg); }
+
+/* Display Utilities */
+.hidden { display: none; }
+.visible { display: block; }
+.invisible { visibility: hidden; }

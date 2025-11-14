@@ -1,0 +1,236 @@
+/* ============================================
+   Features Section - Bento Box Style
+   ============================================ */
+
+.features {
+    padding: var(--spacing-4xl) var(--spacing-md);
+    background: var(--white);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--spacing-md);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Bento Box Layout - Hero Card */
+.feature-card:nth-child(1) {
+    grid-column: span 5;
+    grid-row: span 2;
+    background: linear-gradient(135deg, rgba(92, 192, 235, 0.08) 0%, rgba(92, 192, 235, 0.02) 100%);
+}
+
+/* Medium Cards */
+.feature-card:nth-child(2) {
+    grid-column: span 4;
+    background: linear-gradient(135deg, rgba(179, 146, 240, 0.08) 0%, rgba(179, 146, 240, 0.02) 100%);
+}
+
+.feature-card:nth-child(3) {
+    grid-column: span 3;
+    grid-row: span 2;
+    background: linear-gradient(135deg, rgba(92, 192, 235, 0.06) 0%, rgba(179, 146, 240, 0.06) 100%);
+}
+
+/* Small-Medium Card */
+.feature-card:nth-child(4) {
+    grid-column: span 4;
+    background: linear-gradient(135deg, rgba(255, 183, 197, 0.08) 0%, rgba(255, 183, 197, 0.02) 100%);
+}
+
+/* Bottom Row - Full Width Split */
+.feature-card:nth-child(5) {
+    grid-column: span 5;
+    background: linear-gradient(135deg, rgba(92, 192, 235, 0.04) 0%, rgba(92, 192, 235, 0.08) 100%);
+}
+
+.feature-card:nth-child(6) {
+    grid-column: span 7;
+    background: linear-gradient(135deg, rgba(179, 146, 240, 0.06) 0%, rgba(255, 183, 197, 0.06) 100%);
+}
+
+/* Feature Card Base Styles */
+.feature-card {
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-2xl);
+    background: var(--bg-elevated);
+    text-align: left;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    animation: fadeInUp 0.6s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: var(--main-color);
+    transition: height 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    opacity: 0.1;
+}
+
+.feature-card:hover {
+    transform: translateY(-12px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--main-color);
+}
+
+.feature-card:hover::before {
+    height: 4px;
+}
+
+/* Icon Styling with Glow */
+.feature-card i {
+    font-size: 5.6rem;
+    color: var(--main-color);
+    margin-bottom: var(--spacing-md);
+    display: inline-block;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.feature-card i::before {
+    position: relative;
+    z-index: 2;
+}
+
+.feature-card i::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, var(--main-color-light) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+}
+
+.feature-card:hover i {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.feature-card:hover i::after {
+    opacity: 1;
+}
+
+/* Purple Accent for Card 2 */
+.feature-card:nth-child(2) i {
+    color: var(--accent-purple);
+}
+
+.feature-card:nth-child(2):hover {
+    border-color: var(--accent-purple);
+}
+
+/* Gradient Icon for Card 3 */
+.feature-card:nth-child(3) i {
+    background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Typography */
+.feature-card h3 {
+    font-size: 2.2rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.feature-card p {
+    font-size: 1.6rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+}
+
+/* Special Styling for Hero Card */
+.feature-card:nth-child(1) h3 {
+    font-size: 2.8rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-card:nth-child(1) p {
+    font-size: 1.8rem;
+    max-width: 90%;
+}
+
+.feature-card:nth-child(1) i {
+    font-size: 7.2rem;
+}
+
+/* Stagger Animations */
+.feature-card:nth-child(1) { animation-delay: 0.1s; }
+.feature-card:nth-child(2) { animation-delay: 0.2s; }
+.feature-card:nth-child(3) { animation-delay: 0.3s; }
+.feature-card:nth-child(4) { animation-delay: 0.4s; }
+.feature-card:nth-child(5) { animation-delay: 0.5s; }
+.feature-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Responsive - Tablet (2 columns) */
+@media (max-width: 1200px) and (min-width: 769px) {
+    .feature-card:nth-child(1) {
+        grid-column: span 6;
+        grid-row: span 2;
+    }
+    
+    .feature-card:nth-child(2),
+    .feature-card:nth-child(3) {
+        grid-column: span 6;
+    }
+    
+    .feature-card:nth-child(4),
+    .feature-card:nth-child(5),
+    .feature-card:nth-child(6) {
+        grid-column: span 6;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 900px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    /* Reset bento box layout on mobile */
+    .feature-card:nth-child(1),
+    .feature-card:nth-child(2),
+    .feature-card:nth-child(3),
+    .feature-card:nth-child(4),
+    .feature-card:nth-child(5),
+    .feature-card:nth-child(6) {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+    
+    .feature-card:nth-child(1) h3 {
+        font-size: 2.2rem;
+    }
+    
+    .feature-card:nth-child(1) p {
+        font-size: 1.6rem;
+    }
+    
+    .feature-card:nth-child(1) i {
+        font-size: 5.6rem;
+    }
+}

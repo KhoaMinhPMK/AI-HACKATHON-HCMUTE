@@ -1,0 +1,177 @@
+/* ============================================
+   Card Components
+   ============================================ */
+
+/* Feature Card */
+.feature-card {
+    background: linear-gradient(135deg, var(--white) 0%, var(--light-bg) 100%);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(92, 192, 235, 0.1);
+    transition: all var(--transition-bounce);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-accent);
+    opacity: 0;
+    transition: opacity var(--transition-smooth);
+    pointer-events: none;
+}
+
+.feature-card:hover {
+    transform: translateY(-12px);
+    box-shadow: var(--shadow-xl);
+    border-color: rgba(92, 192, 235, 0.3);
+}
+
+.feature-card:hover::before {
+    opacity: 0.03;
+}
+
+.feature-card i {
+    font-size: 4rem;
+    color: var(--main-color);
+    margin-bottom: var(--spacing-md);
+    display: inline-block;
+    transition: all var(--transition-bounce);
+}
+
+.feature-card:hover i {
+    transform: scale(1.1) rotate(-5deg);
+    color: var(--accent-purple);
+}
+
+.feature-card h3 {
+    font-size: 2.2rem;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.feature-card p {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+}
+
+/* Pricing Card */
+.pricing-card {
+    background: var(--white);
+    border: 2px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    text-align: center;
+    transition: all var(--transition-bounce);
+    position: relative;
+    overflow: hidden;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--main-color);
+    box-shadow: var(--shadow-xl);
+}
+
+.pricing-card.featured {
+    background: var(--gradient-accent);
+    border-color: var(--main-color);
+    box-shadow: var(--shadow-color-lg);
+    transform: scale(1.05);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.08) translateY(-8px);
+}
+
+.pricing-card .badge {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: var(--gradient-primary);
+    color: var(--white);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-full);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.pricing-card h3 {
+    font-size: 2.4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.pricing-card .price {
+    font-size: 4.8rem;
+    font-weight: 700;
+    color: var(--main-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.pricing-card .price span {
+    font-size: 1.8rem;
+    color: var(--text-secondary);
+}
+
+/* Testimonial Card */
+.testimonial-card {
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: all var(--transition-bounce);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.testimonial-card .stars {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.testimonial-card p {
+    font-size: 1.6rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-lg);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+}
+
+.testimonial-author h4 {
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+}
+
+.testimonial-author p {
+    font-size: 1.4rem;
+    margin: 0;
+}

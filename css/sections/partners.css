@@ -1,0 +1,162 @@
+/* ============================================
+   Partners & Sponsors Marquee Section
+   ============================================ */
+
+.partners-section {
+    padding: clamp(6rem, 10vw, 10rem) var(--spacing-md);
+    background: linear-gradient(180deg, 
+        var(--white) 0%, 
+        rgba(92, 192, 235, 0.03) 100%);
+    overflow: hidden;
+    position: relative;
+}
+
+.partners-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(92, 192, 235, 0.2) 50%, 
+        transparent 100%);
+}
+
+.partners-section .section-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 5vw, 5rem);
+}
+
+/* Marquee Container */
+.partners-marquee {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: var(--spacing-lg) 0;
+}
+
+.partners-marquee::before,
+.partners-marquee::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.partners-marquee::before {
+    left: 0;
+    background: linear-gradient(90deg, 
+        var(--white) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+}
+
+.partners-marquee::after {
+    right: 0;
+    background: linear-gradient(270deg, 
+        var(--white) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+}
+
+/* Marquee Track - Infinite Scroll */
+.partners-track {
+    display: flex;
+    align-items: center;
+    gap: clamp(4rem, 8vw, 8rem);
+    animation: marqueeScroll 30s linear infinite;
+    will-change: transform;
+}
+
+.partners-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Partner Logo Item */
+.partner-logo {
+    flex-shrink: 0;
+    width: clamp(120px, 15vw, 160px);
+    height: clamp(80px, 10vw, 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.partner-logo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, 
+        rgba(92, 192, 235, 0.05) 0%, 
+        rgba(179, 146, 240, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.partner-logo:hover {
+    transform: translateY(-8px) scale(1.05);
+    border-color: rgba(92, 192, 235, 0.3);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 16px 32px rgba(92, 192, 235, 0.15);
+}
+
+.partner-logo:hover::before {
+    opacity: 1;
+}
+
+.partner-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.6);
+    transition: all 0.4s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.partner-logo:hover img {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .partners-section {
+        padding: var(--spacing-3xl) var(--spacing-md);
+    }
+    
+    .partners-track {
+        gap: var(--spacing-xl);
+    }
+    
+    .partner-logo {
+        width: 100px;
+        height: 70px;
+    }
+    
+    .partners-marquee::before,
+    .partners-marquee::after {
+        width: 40px;
+    }
+}

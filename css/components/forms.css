@@ -1,0 +1,103 @@
+/* ============================================
+   Form Components
+   ============================================ */
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+    letter-spacing: -0.01em;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    background: var(--white);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    font-family: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 4px var(--main-color-light);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-tertiary);
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* File Upload */
+input[type="file"] {
+    display: none;
+}
+
+.upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 14px 28px;
+    background: var(--light-bg);
+    border: 2px dashed var(--main-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--main-color);
+}
+
+.upload-label:hover {
+    background: var(--main-color-light);
+    border-style: solid;
+}
+
+/* Checkbox & Radio */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--main-color);
+    cursor: pointer;
+}
+
+/* Features List */
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-lg) 0;
+}
+
+.features-list li {
+    padding: var(--spacing-sm) 0;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.features-list li:last-child {
+    border-bottom: none;
+}
