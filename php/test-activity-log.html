@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Activity Log</title>
+</head>
+<body>
+    <h1>Test Activity Log API</h1>
+    <button onclick="test()">Test Now</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function test() {
+            const resultEl = document.getElementById('result');
+            resultEl.textContent = 'Testing...';
+            
+            try {
+                const response = await fetch('https://bkuteam.site/php/api/logs/activity-log.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        firebaseUid: 'test_firebase_uid_1763145474898', // Use existing user
+                        action: 'test_activity',
+                        metadata: {test: true, timestamp: new Date().toISOString()}
+                    })
+                });
+                
+                const text = await response.text();
+                resultEl.textContent = `Status: ${response.status}\n\n${text}`;
+                
+                try {
+                    const json = JSON.parse(text);
+                    resultEl.textContent += '\n\nParsed:\n' + JSON.stringify(json, null, 2);
+                } catch (e) {
+                    resultEl.textContent += '\n\nJSON Parse Error: ' + e.message;
+                }
+            } catch (error) {
+                resultEl.textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

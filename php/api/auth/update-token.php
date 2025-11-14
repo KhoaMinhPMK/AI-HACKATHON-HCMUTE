@@ -62,10 +62,10 @@ try {
     } else {
         // Insert new token
         $stmt = $pdo->prepare("
-            INSERT INTO auth_tokens (user_id, access_token, refresh_token, scope, expires_at)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO auth_tokens (user_id, firebase_uid, access_token, refresh_token, scope, expires_at)
+            VALUES (?, ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$userId, $accessToken, $refreshToken, $scope, $expiresAt]);
+        $stmt->execute([$userId, $firebaseUid, $accessToken, $refreshToken, $scope, $expiresAt]);
         $tokenId = $pdo->lastInsertId();
         $message = 'Token created successfully';
     }
