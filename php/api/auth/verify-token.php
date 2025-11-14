@@ -7,10 +7,8 @@
  * Body: { idToken }
  */
 
-// Use absolute paths
 require_once dirname(__DIR__, 2) . '/config/database.php';
 require_once dirname(__DIR__, 2) . '/helpers/response.php';
-require_once dirname(__DIR__, 2) . '/helpers/validator.php';
 
 setJSONHeaders();
 
@@ -18,76 +16,68 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendError('Method not allowed', 405);
 }
 
-$requestBody = getRequestBody();
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
 
-if (!$requestBody || empty($requestBody['idToken'])) {
-    sendError('ID token is required', 400);
+if (!$data || !isset($data['idToken'])) {
+    sendError('Missing idToken', 400);
 }
 
-$idToken = $requestBody['idToken'];
-
-// Validate token format
-if (!isValidFirebaseToken($idToken)) {
-    sendUnauthorized('Invalid token format');
-}
+$idToken = $data['idToken'];
 
 try {
-    // Method 1: Verify token using Firebase REST API (no Admin SDK needed)
-    $verifyUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' . 
-                 'AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU'; // Your Firebase API key
+    // Verify token using Firebase REST API
+    $apiKey = 'AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU';
+    $verifyUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' . $apiKey;
     
-    $response = file_get_contents($verifyUrl, false, stream_context_create([
+    $context = stream_context_create([
         'http' => [
             'method' => 'POST',
             'header' => 'Content-Type: application/json',
             'content' => json_encode(['idToken' => $idToken]),
-            'timeout' => 10
+            'timeout' => 10,
+            'ignore_errors' => true
         ]
-    ]));
+    ]);
+    
+    $response = @file_get_contents($verifyUrl, false, $context);
     
     if ($response === false) {
-        sendUnauthorized('Token verification failed');
+        sendError('Token verification failed', 401);
     }
     
-    $data = json_decode($response, true);
+    $result = json_decode($response, true);
     
-    if (!isset($data['users']) || empty($data['users'])) {
-        sendUnauthorized('Invalid or expired token');
+    if (!isset($result['users']) || empty($result['users'])) {
+        sendError('Invalid or expired token', 401);
     }
     
-    $firebaseUser = $data['users'][0];
+    $firebaseUser = $result['users'][0];
     $firebaseUid = $firebaseUser['localId'];
     
     // Get user from MySQL
     $pdo = getDBConnection();
-    $stmt = executeQuery(
-        "SELECT id, firebase_uid, email, display_name, photo_url, email_verified, 
-                auth_provider, is_active, last_login 
-         FROM users 
-         WHERE firebase_uid = ? AND is_active = 1",
-        [$firebaseUid]
-    );
-    
+    $stmt = $pdo->prepare("SELECT id, firebase_uid, email, display_name, photo_url, auth_provider, last_login FROM users WHERE firebase_uid = ? AND is_active = 1");
+    $stmt->execute([$firebaseUid]);
     $user = $stmt->fetch();
     
     if (!$user) {
-        sendError('User not found in database. Please sync user first.', 404);
+        sendError('User not found. Please sync user first.', 404);
     }
     
     // Update last login
-    executeQuery("UPDATE users SET last_login = NOW() WHERE id = ?", [$user['id']]);
+    $stmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
+    $stmt->execute([$user['id']]);
     
     sendSuccess([
         'user' => $user,
         'firebase_data' => [
             'uid' => $firebaseUser['localId'],
             'email' => $firebaseUser['email'],
-            'emailVerified' => $firebaseUser['emailVerified'] ?? false,
-            'lastLoginAt' => $firebaseUser['lastLoginAt'] ?? null
+            'emailVerified' => $firebaseUser['emailVerified'] ?? false
         ]
     ], 'Token verified successfully');
     
 } catch (Exception $e) {
-    error_log("Token verification error: " . $e->getMessage());
-    sendServerError('Token verification failed');
+    sendError('Token verification error: ' . $e->getMessage(), 500);
 }
