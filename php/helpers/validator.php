@@ -206,9 +206,15 @@ function checkRateLimit($identifier, $maxRequests = 100, $timeWindow = 3600) {
     // This is a simple file-based rate limiter
     // In production, use Redis or Memcached
     
-    $cacheDir = __DIR__ . '/../cache/rate-limits';
+    $cacheDir = dirname(__DIR__) . '/cache/rate-limits';
     if (!is_dir($cacheDir)) {
-        mkdir($cacheDir, 0755, true);
+        @mkdir($cacheDir, 0777, true);
+    }
+    
+    // If cache dir doesn't exist or isn't writable, skip rate limiting
+    if (!is_dir($cacheDir) || !is_writable($cacheDir)) {
+        error_log("Rate limit cache directory not writable: $cacheDir");
+        return true; // Allow request if can't check limit
     }
     
     $cacheFile = $cacheDir . '/' . md5($identifier) . '.txt';
@@ -217,7 +223,7 @@ function checkRateLimit($identifier, $maxRequests = 100, $timeWindow = 3600) {
     // Read existing data
     $requests = [];
     if (file_exists($cacheFile)) {
-        $data = file_get_contents($cacheFile);
+        $data = @file_get_contents($cacheFile);
         $requests = json_decode($data, true) ?: [];
     }
     
@@ -233,7 +239,7 @@ function checkRateLimit($identifier, $maxRequests = 100, $timeWindow = 3600) {
     
     // Add current request
     $requests[] = $now;
-    file_put_contents($cacheFile, json_encode($requests));
+    @file_put_contents($cacheFile, json_encode($requests));
     
     return true;
 }

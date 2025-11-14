@@ -227,10 +227,10 @@
         const API_BASE = 'https://bkuteam.site/php/api';
         let stats = { total: 0, passed: 0, failed: 0 };
 
-        // Mock Firebase user data
+        // Mock Firebase user data (unique per test run)
         const mockUser = {
             uid: 'test_firebase_uid_' + Date.now(),
-            email: 'test@victoria-ai.com',
+            email: 'test_' + Date.now() + '@victoria-ai.com',
             displayName: 'Test User',
             photoURL: 'https://via.placeholder.com/150',
             emailVerified: true,

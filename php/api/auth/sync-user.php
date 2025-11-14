@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendError('Method not allowed', 405);
 }
 
-// Rate limiting
+// Rate limiting (optional - will skip if cache not writable)
 $clientIP = getClientIP();
 if (!checkRateLimit($clientIP, 60, 3600)) {
     sendError('Rate limit exceeded. Try again later.', 429);
