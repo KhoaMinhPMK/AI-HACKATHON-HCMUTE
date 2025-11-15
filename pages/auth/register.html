@@ -27,6 +27,30 @@
             
             <form class="auth-form" id="registerForm">
                 <div class="form-group">
+                    <label for="role">
+                        <i class="fas fa-user-tag"></i> Bạn là
+                    </label>
+                    <div class="role-selection">
+                        <label class="role-option">
+                            <input type="radio" name="role" value="student" required>
+                            <div class="role-card">
+                                <i class="fas fa-user-graduate"></i>
+                                <span>Sinh Viên</span>
+                                <small>Tìm kiếm cơ hội nghiên cứu</small>
+                            </div>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="role" value="lecturer" required>
+                            <div class="role-card">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <span>Giảng Viên</span>
+                                <small>Hướng dẫn sinh viên NCKH</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
                     <label for="name">
                         <i class="fas fa-user"></i> Họ và Tên
                     </label>
@@ -139,18 +163,20 @@
         const googleProvider = new GoogleAuthProvider();
         
         // Save user profile to Firestore
-        async function saveUserProfile(user) {
+        async function saveUserProfile(user, role) {
             try {
                 await setDoc(doc(db, 'users', user.uid), {
                     displayName: user.displayName || 'User',
                     email: user.email,
+                    role: role || null,
+                    profileCompleted: false,
                     photoURL: user.photoURL || null,
                     emailVerified: user.emailVerified,
                     createdAt: serverTimestamp(),
                     lastLogin: serverTimestamp(),
                     authProvider: user.providerData[0]?.providerId || 'unknown'
                 }, { merge: true });
-                console.log('✅ User profile saved to Firestore');
+                console.log('✅ User profile saved to Firestore with role:', role);
             } catch (error) {
                 // Firestore not setup yet - skip silently
                 console.warn('⚠️ Firestore not available (app works without it)');
@@ -162,9 +188,18 @@
             // Sync to MySQL (non-blocking)
             try {
                 const idToken = await user.getIdToken();
-                await syncUserToMySQL(user, idToken);
-                await logActivity(user.uid, 'register', { source: 'web' });
-                console.log('✅ User synced to MySQL');
+                const userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    emailVerified: user.emailVerified,
+                    provider: user.providerData[0]?.providerId || 'password',
+                    role: role
+                };
+                await syncUserToMySQL(userData, idToken);
+                await logActivity(user.uid, 'register', { source: 'web', role: role });
+                console.log('✅ User synced to MySQL with role');
             } catch (error) {
                 console.warn('⚠️ MySQL sync failed (app works without it):', error.message);
             }
@@ -177,10 +212,21 @@
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const role = document.querySelector('input[name="role"]:checked')?.value;
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Check if role is selected
+            if (!role) {
+                const message = document.createElement('div');
+                message.className = 'message message-error';
+                message.innerHTML = '<i class="fas fa-exclamation-circle"></i> Vui lòng chọn vai trò (Sinh viên hoặc Giảng viên)!';
+                form.insertBefore(message, form.firstChild);
+                setTimeout(() => message.remove(), 3000);
+                return;
+            }
             
             // Password validation
             if (password !== confirmPassword) {
@@ -218,18 +264,18 @@
                 // Reload user to get updated profile
                 await user.reload();
                 
-                // Save profile to Firestore
-                await saveUserProfile(auth.currentUser);
+                // Save profile to Firestore with role
+                await saveUserProfile(auth.currentUser, role);
                 
                 // Show success message
                 const message = document.createElement('div');
                 message.className = 'message message-success';
-                message.innerHTML = '<i class="fas fa-check-circle"></i> Đăng ký thành công! Đang chuyển hướng...';
+                message.innerHTML = '<i class="fas fa-check-circle"></i> Đăng ký thành công! Vui lòng hoàn thiện thông tin...';
                 form.insertBefore(message, form.firstChild);
                 
-                // Redirect to signin
+                // Redirect to dashboard (will show complete profile prompt)
                 setTimeout(() => {
-                    window.location.href = 'signin.html';
+                    window.location.href = '../dashboard/index.html';
                 }, 1500);
                 
             } catch (error) {

@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VICTORIA AI Chat | AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            max-width: 100%;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .new-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 6px;
+            border-radius: 12px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .history-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(4px);
+        }
+
+        /* Main Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+        }
+
+        .chat-header {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .model-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            font-size: 13px;
+            color: #667eea;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            display: flex;
+            gap: 15px;
+            animation: messageSlideIn 0.3s ease;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .avatar.user-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .avatar.ai-avatar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai .message-content {
+            background: rgba(0, 0, 0, 0.05);
+            color: #1a1a1a;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .welcome-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .suggestions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .suggestion-card {
+            padding: 20px;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .suggestion-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .suggestion-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .suggestion-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #messageInput {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 24px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: none;
+            max-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .voice-btn {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .voice-btn.listening {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(240, 147, 251, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(240, 147, 251, 0);
+            }
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        /* Voice Mode UI */
+        .voice-mode {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .voice-mode.active {
+            display: flex;
+        }
+
+        .voice-orb {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .voice-orb.listening {
+            animation: orbPulse 2s infinite;
+        }
+
+        @keyframes orbPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 20px 80px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        .voice-status {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .voice-transcript {
+            font-size: 24px;
+            font-weight: 300;
+            color: #667eea;
+            text-align: center;
+            max-width: 600px;
+            min-height: 60px;
+            margin-bottom: 30px;
+        }
+
+        .voice-controls {
+            display: flex;
+            gap: 20px;
+        }
+
+        .voice-control-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .voice-control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .voice-control-btn.primary {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 260px;
+                transform: translateX(-100%);
+                position: fixed;
+                height: 100vh;
+                z-index: 100;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .suggestions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">V</div>
+                <div class="logo-text">VICTORIA AI</div>
+            </div>
+
+            <button class="new-chat-btn" onclick="newChat()">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Cuộc trò chuyện mới
+            </button>
+
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="text" onclick="switchMode('text')">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    Text
+                </button>
+                <button class="mode-btn" data-mode="voice" onclick="switchMode('voice')">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                    </svg>
+                    Voice
+                </button>
+            </div>
+
+            <div class="chat-history">
+                <div class="history-item">💬 Cuộc trò chuyện trước</div>
+                <div class="history-item">🤖 Trợ lý AI của tôi</div>
+                <div class="history-item">📝 Giúp đỡ với code</div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <div class="chat-header">
+                <div class="chat-title">VICTORIA AI Chat</div>
+                <div class="model-info">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <span>GPT-4 Powered</span>
+                </div>
+            </div>
+
+            <!-- Text Mode -->
+            <div id="textMode" class="text-mode">
+                <div class="messages-container" id="messagesContainer">
+                    <div class="welcome-screen">
+                        <div class="welcome-icon">
+                            <svg width="40" height="40" fill="white" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                        </div>
+                        <h1 class="welcome-title">Xin chào! Tôi là VICTORIA AI</h1>
+                        <p class="welcome-subtitle">Tôi có thể giúp gì cho bạn hôm nay?</p>
+                        
+                        <div class="suggestions">
+                            <div class="suggestion-card" onclick="sendSuggestion('Giải thích về trí tuệ nhân tạo')">
+                                <div class="suggestion-icon">🤖</div>
+                                <div class="suggestion-title">Giải thích về AI</div>
+                            </div>
+                            <div class="suggestion-card" onclick="sendSuggestion('Viết một đoạn code Python')">
+                                <div class="suggestion-icon">💻</div>
+                                <div class="suggestion-title">Viết code</div>
+                            </div>
+                            <div class="suggestion-card" onclick="sendSuggestion('Tạo ý tưởng sáng tạo')">
+                                <div class="suggestion-icon">💡</div>
+                                <div class="suggestion-title">Ý tưởng sáng tạo</div>
+                            </div>
+                            <div class="suggestion-card" onclick="sendSuggestion('Dịch văn bản')">
+                                <div class="suggestion-icon">🌍</div>
+                                <div class="suggestion-title">Dịch thuật</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="input-wrapper">
+                        <div class="input-container">
+                            <textarea 
+                                id="messageInput" 
+                                placeholder="Nhập tin nhắn của bạn..." 
+                                rows="1"
+                                onkeydown="handleKeyPress(event)"
+                                oninput="autoResize(this)"
+                            ></textarea>
+                            <button class="voice-btn" id="voiceInputBtn" onclick="startVoiceInput()" title="Nhấn để nói">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice Mode -->
+            <div id="voiceMode" class="voice-mode">
+                <div class="voice-orb" id="voiceOrb">
+                    <svg width="80" height="80" fill="white" viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                    </svg>
+                </div>
+                <div class="voice-status" id="voiceStatus">Nhấn để bắt đầu nói</div>
+                <div class="voice-transcript" id="voiceTranscript"></div>
+                
+                <div class="voice-controls">
+                    <button class="voice-control-btn primary" id="voiceMicBtn" onclick="toggleVoiceListening()">
+                        <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Speech Recognition Setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+        
+        if (recognition) {
+            recognition.lang = 'vi-VN';
+            recognition.continuous = false;
+            recognition.interimResults = true;
+        }
+
+        // Speech Synthesis Setup
+        const synth = window.speechSynthesis;
+        let currentMode = 'text';
+        let isListening = false;
+
+        // Mode Switching
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Update buttons
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+
+            // Update UI
+            if (mode === 'text') {
+                document.getElementById('textMode').style.display = 'flex';
+                document.getElementById('voiceMode').classList.remove('active');
+            } else {
+                document.getElementById('textMode').style.display = 'none';
+                document.getElementById('voiceMode').classList.add('active');
+            }
+        }
+
+        // New Chat
+        function newChat() {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = `
+                <div class="welcome-screen">
+                    <div class="welcome-icon">
+                        <svg width="40" height="40" fill="white" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                    </div>
+                    <h1 class="welcome-title">Xin chào! Tôi là VICTORIA AI</h1>
+                    <p class="welcome-subtitle">Tôi có thể giúp gì cho bạn hôm nay?</p>
+                    
+                    <div class="suggestions">
+                        <div class="suggestion-card" onclick="sendSuggestion('Giải thích về trí tuệ nhân tạo')">
+                            <div class="suggestion-icon">🤖</div>
+                            <div class="suggestion-title">Giải thích về AI</div>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Viết một đoạn code Python')">
+                            <div class="suggestion-icon">💻</div>
+                            <div class="suggestion-title">Viết code</div>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Tạo ý tưởng sáng tạo')">
+                            <div class="suggestion-icon">💡</div>
+                            <div class="suggestion-title">Ý tưởng sáng tạo</div>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Dịch văn bản')">
+                            <div class="suggestion-icon">🌍</div>
+                            <div class="suggestion-title">Dịch thuật</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Send Message
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            autoResize(input);
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = [
+                    'Tôi hiểu rồi! Đây là một câu hỏi thú vị. Để trả lời câu hỏi của bạn...',
+                    'Cảm ơn bạn đã hỏi! Tôi sẽ giúp bạn giải quyết vấn đề này.',
+                    'Đó là một ý tưởng tuyệt vời! Hãy cùng tôi khám phá thêm về điều này.',
+                    'Tôi có thể giúp bạn với điều đó. Đây là những gì tôi nghĩ...'
+                ];
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(response, 'ai');
+                
+                // Text to Speech for AI response
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(response);
+                    utterance.lang = 'vi-VN';
+                    utterance.rate = 1.0;
+                    synth.speak(utterance);
+                }
+            }, 1000);
+        }
+
+        // Add Message to UI
+        function addMessage(text, sender) {
+            const container = document.getElementById('messagesContainer');
+            
+            // Remove welcome screen if exists
+            const welcomeScreen = container.querySelector('.welcome-screen');
+            if (welcomeScreen) {
+                welcomeScreen.remove();
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = `avatar ${sender}-avatar`;
+            avatar.textContent = sender === 'user' ? 'B' : 'AI';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = text;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            container.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Send Suggestion
+        function sendSuggestion(text) {
+            document.getElementById('messageInput').value = text;
+            sendMessage();
+        }
+
+        // Auto Resize Textarea
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
+
+        // Handle Enter Key
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Voice Input in Text Mode
+        function startVoiceInput() {
+            if (!recognition) {
+                alert('Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói!');
+                return;
+            }
+
+            const btn = document.getElementById('voiceInputBtn');
+            
+            if (isListening) {
+                recognition.stop();
+                isListening = false;
+                btn.classList.remove('listening');
+            } else {
+                recognition.start();
+                isListening = true;
+                btn.classList.add('listening');
+            }
+        }
+
+        // Voice Mode Listening
+        function toggleVoiceListening() {
+            if (!recognition) {
+                alert('Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói!');
+                return;
+            }
+
+            const orb = document.getElementById('voiceOrb');
+            const status = document.getElementById('voiceStatus');
+            
+            if (isListening) {
+                recognition.stop();
+                isListening = false;
+                orb.classList.remove('listening');
+                status.textContent = 'Nhấn để bắt đầu nói';
+            } else {
+                recognition.start();
+                isListening = true;
+                orb.classList.add('listening');
+                status.textContent = 'Đang lắng nghe...';
+            }
+        }
+
+        // Recognition Events
+        if (recognition) {
+            recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                
+                if (currentMode === 'voice') {
+                    document.getElementById('voiceTranscript').textContent = transcript;
+                } else {
+                    document.getElementById('messageInput').value = transcript;
+                }
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                
+                if (currentMode === 'voice') {
+                    const transcript = document.getElementById('voiceTranscript').textContent;
+                    if (transcript) {
+                        // Process voice command
+                        setTimeout(() => {
+                            const response = 'Tôi đã nghe được: ' + transcript;
+                            document.getElementById('voiceTranscript').textContent = '';
+                            
+                            // Speak response
+                            const utterance = new SpeechSynthesisUtterance(response);
+                            utterance.lang = 'vi-VN';
+                            synth.speak(utterance);
+                            
+                            document.getElementById('voiceStatus').textContent = 'Đang trả lời...';
+                            
+                            utterance.onend = () => {
+                                document.getElementById('voiceStatus').textContent = 'Nhấn để bắt đầu nói';
+                            };
+                        }, 500);
+                    }
+                    
+                    document.getElementById('voiceOrb').classList.remove('listening');
+                } else {
+                    document.getElementById('voiceInputBtn').classList.remove('listening');
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                
+                if (currentMode === 'voice') {
+                    document.getElementById('voiceOrb').classList.remove('listening');
+                    document.getElementById('voiceStatus').textContent = 'Lỗi: ' + event.error;
+                } else {
+                    document.getElementById('voiceInputBtn').classList.remove('listening');
+                }
+            };
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('VICTORIA AI Chat initialized');
+            console.log('Speech Recognition available:', !!recognition);
+            console.log('Speech Synthesis available:', 'speechSynthesis' in window);
+        });
+    </script>
+</body>
+</html>
+

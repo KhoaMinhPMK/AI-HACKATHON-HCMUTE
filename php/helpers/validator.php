@@ -196,6 +196,39 @@ function validateActivityLog($data) {
 }
 
 /**
+ * Validate Vietnamese phone number
+ * @param string $phone
+ * @return bool
+ */
+function validatePhone($phone) {
+    // Remove spaces and dashes
+    $phone = preg_replace('/[\s\-]/', '', $phone);
+    
+    // Vietnamese phone: 10 digits starting with 0
+    return preg_match('/^0[0-9]{9}$/', $phone) === 1;
+}
+
+/**
+ * Validate student ID (MSSV)
+ * @param string $studentId
+ * @return bool
+ */
+function validateStudentId($studentId) {
+    // Student ID: 8-10 characters (can be alphanumeric)
+    return preg_match('/^[A-Z0-9]{8,10}$/i', $studentId) === 1;
+}
+
+/**
+ * Validate lecturer ID
+ * @param string $lecturerId
+ * @return bool
+ */
+function validateLecturerId($lecturerId) {
+    // Lecturer ID: 3-10 characters
+    return strlen($lecturerId) >= 3 && strlen($lecturerId) <= 10;
+}
+
+/**
  * Rate limiting check (simple implementation)
  * @param string $identifier IP or user ID
  * @param int $maxRequests Max requests allowed

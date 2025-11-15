@@ -22,6 +22,10 @@
                     </div>
                     <span class="user-name" id="userName">Loading...</span>
                 </div>
+                <button class="btn-settings" onclick="window.location.href='settings.html'">
+                    <i class="fas fa-cog"></i>
+                    <span>Cài Đặt</span>
+                </button>
                 <button class="btn-logout" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Đăng xuất</span>
@@ -33,6 +37,18 @@
     <!-- Main Content -->
     <main class="dashboard-main">
         <div class="dashboard-container">
+            <!-- Profile Incomplete Alert -->
+            <div class="profile-alert" id="profileAlert" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="profile-alert-content">
+                    <h3>Hồ Sơ Chưa Hoàn Thiện</h3>
+                    <p id="alertMessage">Vui lòng cập nhật đầy đủ thông tin để sử dụng các tính năng của Victoria AI</p>
+                </div>
+                <button class="profile-alert-btn" onclick="window.location.href='settings.html'">
+                    <i class="fas fa-arrow-right"></i> Hoàn Thiện Ngay
+                </button>
+            </div>
+
             <!-- Welcome Section -->
             <section class="welcome-section">
                 <h1>Chào mừng trở lại, <span id="welcomeName">User</span>! 👋</h1>
@@ -274,6 +290,9 @@
                     console.warn('Firestore sync skipped:', err.code);
                 });
                 
+                // Check profile completeness
+                await checkProfileCompleteness(user);
+                
                 // Update UI with user data
                 document.getElementById('userName').textContent = user.displayName || 'User';
                 document.getElementById('welcomeName').textContent = user.displayName || 'User';
@@ -393,6 +412,36 @@
         document.querySelector('.action-btn-success').addEventListener('click', () => {
             window.location.href = '../../index.html';
         });
+        
+        // Check profile completeness
+        async function checkProfileCompleteness(user) {
+            try {
+                const token = await user.getIdToken();
+                const response = await fetch('../../php/api/profile/check-complete.php', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && !result.data.complete) {
+                    // Show alert banner
+                    const alertEl = document.getElementById('profileAlert');
+                    const messageEl = document.getElementById('alertMessage');
+                    
+                    if (result.data.missing_fields && result.data.missing_fields.length > 0) {
+                        const fields = result.data.missing_fields.map(f => f.label || f).join(', ');
+                        messageEl.textContent = `Còn thiếu: ${fields}. Vui lòng cập nhật để sử dụng đầy đủ tính năng.`;
+                    }
+                    
+                    alertEl.style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Check profile error:', error);
+                // Không hiển thị lỗi cho user, chỉ log
+            }
+        }
     </script>
 </body>
 </html>

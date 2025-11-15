@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài Đặt - Victoria AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="../../assets/logo_cropped.png" alt="Victoria AI">
+                <span>Victoria AI</span>
+            </div>
+            <div class="user-menu">
+                <button class="btn-back" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Đăng xuất</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="settings-container">
+            <h1 class="settings-title">
+                <i class="fas fa-cog"></i>
+                Cài Đặt Hồ Sơ
+            </h1>
+            <p class="settings-subtitle">Hoàn thiện thông tin của bạn để sử dụng đầy đủ tính năng</p>
+
+            <!-- Role Selection (if not set) -->
+            <div id="roleSelectionSection" style="display: none;">
+                <div class="settings-card">
+                    <h2>Chọn Vai Trò</h2>
+                    <div class="role-selection">
+                        <label class="role-option">
+                            <input type="radio" name="role" value="student">
+                            <div class="role-card">
+                                <i class="fas fa-user-graduate"></i>
+                                <span>Sinh Viên</span>
+                                <small>Tìm kiếm cơ hội nghiên cứu</small>
+                            </div>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="role" value="lecturer">
+                            <div class="role-card">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <span>Giảng Viên</span>
+                                <small>Hướng dẫn sinh viên NCKH</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Profile Form -->
+            <form id="studentProfileForm" class="profile-form" style="display: none;">
+                <div class="settings-card">
+                    <h2><i class="fas fa-user"></i> Thông Tin Cơ Bản</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentId">
+                                <i class="fas fa-id-card"></i> Mã Số Sinh Viên <span class="required">*</span>
+                            </label>
+                            <input type="text" id="studentId" name="studentId" required 
+                                   placeholder="VD: 20520001">
+                            <small>8-10 ký tự (chữ hoặc số)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="studentPhone">
+                                <i class="fas fa-phone"></i> Số Điện Thoại <span class="required">*</span>
+                            </label>
+                            <input type="tel" id="studentPhone" name="phone" required 
+                                   placeholder="0123456789">
+                            <small>10 số, bắt đầu bằng 0</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="university">
+                            <i class="fas fa-university"></i> Trường Đại Học <span class="required">*</span>
+                        </label>
+                        <input type="text" id="university" name="university" required 
+                               placeholder="VD: Đại học Bách Khoa TP.HCM">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="major">
+                                <i class="fas fa-graduation-cap"></i> Chuyên Ngành <span class="required">*</span>
+                            </label>
+                            <input type="text" id="major" name="major" required 
+                                   placeholder="VD: Khoa học máy tính">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="academicYear">
+                                <i class="fas fa-calendar"></i> Khóa Học
+                            </label>
+                            <input type="text" id="academicYear" name="academicYear" 
+                                   placeholder="VD: 2020, K45">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h2><i class="fas fa-info-circle"></i> Thông Tin Bổ Sung</h2>
+                    
+                    <div class="form-group">
+                        <label for="bio">
+                            <i class="fas fa-align-left"></i> Giới Thiệu Bản Thân
+                        </label>
+                        <textarea id="bio" name="bio" rows="4" 
+                                  placeholder="Giới thiệu ngắn gọn về bạn..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="researchInterests">
+                            <i class="fas fa-flask"></i> Sở Thích Nghiên Cứu
+                        </label>
+                        <textarea id="researchInterests" name="researchInterests" rows="3" 
+                                  placeholder="VD: Machine Learning, AI, Computer Vision..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Lưu Thay Đổi
+                    </button>
+                </div>
+            </form>
+
+            <!-- Lecturer Profile Form -->
+            <form id="lecturerProfileForm" class="profile-form" style="display: none;">
+                <div class="settings-card">
+                    <h2><i class="fas fa-user"></i> Thông Tin Cơ Bản</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lecturerId">
+                                <i class="fas fa-id-badge"></i> Mã Giảng Viên <span class="required">*</span>
+                            </label>
+                            <input type="text" id="lecturerId" name="lecturerId" required 
+                                   placeholder="VD: GV001">
+                            <small>3-10 ký tự</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lecturerPhone">
+                                <i class="fas fa-phone"></i> Số Điện Thoại <span class="required">*</span>
+                            </label>
+                            <input type="tel" id="lecturerPhone" name="phone" required 
+                                   placeholder="0123456789">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lecturerUniversity">
+                            <i class="fas fa-university"></i> Trường Đại Học <span class="required">*</span>
+                        </label>
+                        <input type="text" id="lecturerUniversity" name="university" required 
+                               placeholder="VD: Đại học Bách Khoa TP.HCM">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="department">
+                                <i class="fas fa-building"></i> Khoa/Bộ Môn <span class="required">*</span>
+                            </label>
+                            <input type="text" id="department" name="department" required 
+                                   placeholder="VD: Khoa KHMT & KT Máy Tính">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="degree">
+                                <i class="fas fa-award"></i> Học Vị <span class="required">*</span>
+                            </label>
+                            <select id="degree" name="degree" required>
+                                <option value="">Chọn học vị</option>
+                                <option value="bachelor">Cử nhân</option>
+                                <option value="master">Thạc sĩ</option>
+                                <option value="phd">Tiến sĩ</option>
+                                <option value="associate_prof">Phó Giáo sư</option>
+                                <option value="professor">Giáo sư</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h2><i class="fas fa-flask"></i> Thông Tin Nghiên Cứu</h2>
+                    
+                    <div class="form-group">
+                        <label for="lecturerResearchInterests">
+                            <i class="fas fa-microscope"></i> Lĩnh Vực Nghiên Cứu <span class="required">*</span>
+                        </label>
+                        <textarea id="lecturerResearchInterests" name="researchInterests" rows="4" required
+                                  placeholder="VD: Artificial Intelligence, Machine Learning, Data Science..."></textarea>
+                        <small>Ít nhất 20 ký tự</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="officeLocation">
+                                <i class="fas fa-map-marker-alt"></i> Địa Chỉ Phòng Làm Việc
+                            </label>
+                            <input type="text" id="officeLocation" name="officeLocation" 
+                                   placeholder="VD: Phòng A101, Tòa nhà H6">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="publicationsCount">
+                                <i class="fas fa-book"></i> Số Công Bố Khoa Học
+                            </label>
+                            <input type="number" id="publicationsCount" name="publicationsCount" min="0" 
+                                   placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lecturerBio">
+                            <i class="fas fa-align-left"></i> Giới Thiệu
+                        </label>
+                        <textarea id="lecturerBio" name="bio" rows="4" 
+                                  placeholder="Giới thiệu về bản thân, kinh nghiệm nghiên cứu..."></textarea>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h2><i class="fas fa-users"></i> Hướng Dẫn Sinh Viên</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="availableForMentoring" name="availableForMentoring" checked>
+                                <span>Sẵn sàng hướng dẫn sinh viên NCKH</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxStudents">
+                                <i class="fas fa-users"></i> Số SV tối đa có thể hướng dẫn
+                            </label>
+                            <input type="number" id="maxStudents" name="maxStudents" min="1" max="20" value="5">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Lưu Thay Đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Đang tải thông tin...</p>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU",
+            authDomain: "victoria-908a3.firebaseapp.com",
+            projectId: "victoria-908a3",
+            storageBucket: "victoria-908a3.firebasestorage.app",
+            messagingSenderId: "906906328836",
+            appId: "1:906906328836:web:b050d66d1b178f03f4fa51"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        let currentUser = null;
+        let currentRole = null;
+        
+        // Check auth and load profile
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await loadProfile(user);
+            } else {
+                window.location.href = '../auth/signin.html';
+            }
+        });
+        
+        // Load profile data
+        async function loadProfile(user) {
+            try {
+                const token = await user.getIdToken();
+                const response = await fetch('../../php/api/profile/get-profile.php', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const userData = result.data.user;
+                    const profileData = result.data.profile;
+                    currentRole = userData.role;
+                    
+                    if (!currentRole) {
+                        // Show role selection
+                        document.getElementById('roleSelectionSection').style.display = 'block';
+                        setupRoleSelection();
+                    } else {
+                        // Show appropriate form
+                        showProfileForm(currentRole, profileData);
+                    }
+                } else {
+                    showToast('Lỗi tải profile: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Load profile error:', error);
+                showToast('Lỗi kết nối server', 'error');
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+        
+        // Setup role selection
+        function setupRoleSelection() {
+            const roleInputs = document.querySelectorAll('input[name="role"]');
+            roleInputs.forEach(input => {
+                input.addEventListener('change', (e) => {
+                    currentRole = e.target.value;
+                    document.getElementById('roleSelectionSection').style.display = 'none';
+                    showProfileForm(currentRole, null);
+                });
+            });
+        }
+        
+        // Show profile form based on role
+        function showProfileForm(role, data) {
+            if (role === 'student') {
+                const form = document.getElementById('studentProfileForm');
+                form.style.display = 'block';
+                if (data) fillStudentForm(data);
+                setupStudentFormSubmit();
+            } else if (role === 'lecturer') {
+                const form = document.getElementById('lecturerProfileForm');
+                form.style.display = 'block';
+                if (data) fillLecturerForm(data);
+                setupLecturerFormSubmit();
+            }
+        }
+        
+        // Fill student form with data
+        function fillStudentForm(data) {
+            if (data.student_id) document.getElementById('studentId').value = data.student_id;
+            if (data.phone) document.getElementById('studentPhone').value = data.phone;
+            if (data.university) document.getElementById('university').value = data.university;
+            if (data.major) document.getElementById('major').value = data.major;
+            if (data.academic_year) document.getElementById('academicYear').value = data.academic_year;
+            if (data.bio) document.getElementById('bio').value = data.bio;
+            if (data.research_interests) document.getElementById('researchInterests').value = data.research_interests;
+        }
+        
+        // Fill lecturer form with data
+        function fillLecturerForm(data) {
+            if (data.lecturer_id) document.getElementById('lecturerId').value = data.lecturer_id;
+            if (data.phone) document.getElementById('lecturerPhone').value = data.phone;
+            if (data.university) document.getElementById('lecturerUniversity').value = data.university;
+            if (data.department) document.getElementById('department').value = data.department;
+            if (data.degree) document.getElementById('degree').value = data.degree;
+            if (data.research_interests) document.getElementById('lecturerResearchInterests').value = data.research_interests;
+            if (data.office_location) document.getElementById('officeLocation').value = data.office_location;
+            if (data.publications_count) document.getElementById('publicationsCount').value = data.publications_count;
+            if (data.bio) document.getElementById('lecturerBio').value = data.bio;
+            if (data.available_for_mentoring !== undefined) {
+                document.getElementById('availableForMentoring').checked = data.available_for_mentoring == 1;
+            }
+            if (data.max_students) document.getElementById('maxStudents').value = data.max_students;
+        }
+        
+        // Setup student form submit
+        function setupStudentFormSubmit() {
+            const form = document.getElementById('studentProfileForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const data = {
+                    role: 'student',
+                    student_id: formData.get('studentId'),
+                    phone: formData.get('phone'),
+                    university: formData.get('university'),
+                    major: formData.get('major'),
+                    academic_year: formData.get('academicYear'),
+                    bio: formData.get('bio'),
+                    research_interests: formData.get('researchInterests')
+                };
+                
+                await updateProfile(data);
+            });
+        }
+        
+        // Setup lecturer form submit
+        function setupLecturerFormSubmit() {
+            const form = document.getElementById('lecturerProfileForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const data = {
+                    role: 'lecturer',
+                    lecturer_id: formData.get('lecturerId'),
+                    phone: formData.get('phone'),
+                    university: formData.get('university'),
+                    department: formData.get('department'),
+                    degree: formData.get('degree'),
+                    research_interests: formData.get('researchInterests'),
+                    office_location: formData.get('officeLocation'),
+                    publications_count: parseInt(formData.get('publicationsCount')) || 0,
+                    bio: formData.get('bio'),
+                    available_for_mentoring: document.getElementById('availableForMentoring').checked,
+                    max_students: parseInt(formData.get('maxStudents')) || 5
+                };
+                
+                await updateProfile(data);
+            });
+        }
+        
+        // Update profile
+        async function updateProfile(data) {
+            try {
+                const token = await currentUser.getIdToken();
+                const response = await fetch('../../php/api/profile/update-profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(result.data.message || 'Cập nhật thành công!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showToast('Lỗi: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Update error:', error);
+                showToast('Lỗi kết nối server', 'error');
+            }
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast toast-${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                await signOut(auth);
+                window.location.href = '../auth/signin.html';
+            }
+        });
+    </script>
+</body>
+</html>
+

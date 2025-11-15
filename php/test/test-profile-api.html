@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Profile APIs - Victoria AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            padding: 2rem;
+        }
+        .container { max-width: 120rem; margin: 0 auto; }
+        h1 { color: #1a1a1a; margin-bottom: 2rem; }
+        .section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #5cc0eb;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.6rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 8rem;
+        }
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.6rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #5cc0eb 0%, #B392F0 100%);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(92, 192, 235, 0.4); }
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        .result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #1a1a1a;
+            color: #10B981;
+            border-radius: 0.6rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .error { color: #EF4444; }
+        .success { color: #10B981; }
+        .warning { color: #F59E0B; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Profile APIs - Victoria AI</h1>
+
+        <!-- Test 1: Get Profile -->
+        <div class="section">
+            <h2>1. Get Profile (Lấy Thông Tin Profile)</h2>
+            <div class="form-group">
+                <label>Firebase Token:</label>
+                <textarea id="getToken" placeholder="Paste Firebase ID Token here..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="testGetProfile()">
+                🔍 Test Get Profile
+            </button>
+            <div id="getResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 2: Update Student Profile -->
+        <div class="section">
+            <h2>2. Update Student Profile (Cập Nhật SV)</h2>
+            <div class="grid">
+                <div>
+                    <div class="form-group">
+                        <label>Firebase Token:</label>
+                        <textarea id="updateStudentToken"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Mã Số Sinh Viên:</label>
+                        <input type="text" id="studentId" placeholder="20520001">
+                    </div>
+                    <div class="form-group">
+                        <label>Trường Đại Học:</label>
+                        <input type="text" id="university" placeholder="Đại học Bách Khoa TP.HCM">
+                    </div>
+                    <div class="form-group">
+                        <label>Chuyên Ngành:</label>
+                        <input type="text" id="major" placeholder="Khoa học máy tính">
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label>Số Điện Thoại:</label>
+                        <input type="text" id="phone" placeholder="0123456789">
+                    </div>
+                    <div class="form-group">
+                        <label>Khóa Học:</label>
+                        <input type="text" id="academicYear" placeholder="2020">
+                    </div>
+                    <div class="form-group">
+                        <label>Giới Thiệu:</label>
+                        <textarea id="bio" placeholder="Giới thiệu về bạn..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="testUpdateStudent()">
+                💾 Test Update Student
+            </button>
+            <div id="updateStudentResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 3: Update Lecturer Profile -->
+        <div class="section">
+            <h2>3. Update Lecturer Profile (Cập Nhật GV)</h2>
+            <div class="grid">
+                <div>
+                    <div class="form-group">
+                        <label>Firebase Token:</label>
+                        <textarea id="updateLecturerToken"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Mã Giảng Viên:</label>
+                        <input type="text" id="lecturerId" placeholder="GV001">
+                    </div>
+                    <div class="form-group">
+                        <label>Trường Đại Học:</label>
+                        <input type="text" id="lecturerUniversity" placeholder="Đại học Bách Khoa TP.HCM">
+                    </div>
+                    <div class="form-group">
+                        <label>Khoa/Bộ Môn:</label>
+                        <input type="text" id="department" placeholder="Khoa KHMT">
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label>Học Vị:</label>
+                        <select id="degree">
+                            <option value="">Chọn học vị</option>
+                            <option value="bachelor">Cử nhân</option>
+                            <option value="master">Thạc sĩ</option>
+                            <option value="phd">Tiến sĩ</option>
+                            <option value="associate_prof">PGS</option>
+                            <option value="professor">GS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Lĩnh Vực Nghiên Cứu:</label>
+                        <textarea id="researchInterests" placeholder="AI, Machine Learning..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Số Điện Thoại:</label>
+                        <input type="text" id="lecturerPhone" placeholder="0987654321">
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="testUpdateLecturer()">
+                💾 Test Update Lecturer
+            </button>
+            <div id="updateLecturerResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 4: Check Profile Complete -->
+        <div class="section">
+            <h2>4. Check Profile Complete (Kiểm Tra Hoàn Chỉnh)</h2>
+            <div class="form-group">
+                <label>Firebase Token:</label>
+                <textarea id="checkToken"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="testCheckComplete()">
+                ✅ Test Check Complete
+            </button>
+            <div id="checkResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="section">
+            <h2>📖 Hướng Dẫn Sử Dụng</h2>
+            <ol style="line-height: 2;">
+                <li>Đăng nhập vào app: <a href="../../pages/auth/signin.html" target="_blank">Sign In Page</a></li>
+                <li>Mở Developer Console (F12)</li>
+                <li>Chạy: <code>firebase.auth().currentUser.getIdToken().then(token => console.log(token))</code></li>
+                <li>Copy token và paste vào các form trên</li>
+                <li>Click nút Test để thử API</li>
+            </ol>
+            <p style="margin-top: 1rem; padding: 1rem; background: #FEF3C7; border-left: 4px solid #F59E0B; border-radius: 0.4rem;">
+                <strong>⚠️ Lưu ý:</strong> Token chỉ có hiệu lực trong 1 giờ. Nếu test lỗi 401, lấy token mới.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '../../php/api/profile';
+
+        async function testGetProfile() {
+            const token = document.getElementById('getToken').value.trim();
+            const resultEl = document.getElementById('getResult');
+            
+            if (!token) {
+                showResult(resultEl, 'error', 'Vui lòng nhập Firebase Token!');
+                return;
+            }
+            
+            try {
+                showResult(resultEl, 'info', 'Đang gửi request...');
+                
+                const response = await fetch(`${API_BASE}/get-profile.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const result = await response.json();
+                showResult(resultEl, response.ok ? 'success' : 'error', JSON.stringify(result, null, 2));
+            } catch (error) {
+                showResult(resultEl, 'error', `Lỗi: ${error.message}`);
+            }
+        }
+
+        async function testUpdateStudent() {
+            const token = document.getElementById('updateStudentToken').value.trim();
+            const resultEl = document.getElementById('updateStudentResult');
+            
+            if (!token) {
+                showResult(resultEl, 'error', 'Vui lòng nhập Firebase Token!');
+                return;
+            }
+            
+            const data = {
+                role: 'student',
+                student_id: document.getElementById('studentId').value,
+                university: document.getElementById('university').value,
+                major: document.getElementById('major').value,
+                phone: document.getElementById('phone').value,
+                academic_year: document.getElementById('academicYear').value,
+                bio: document.getElementById('bio').value
+            };
+            
+            try {
+                showResult(resultEl, 'info', 'Đang gửi request...');
+                
+                const response = await fetch(`${API_BASE}/update-profile.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                showResult(resultEl, response.ok ? 'success' : 'error', JSON.stringify(result, null, 2));
+            } catch (error) {
+                showResult(resultEl, 'error', `Lỗi: ${error.message}`);
+            }
+        }
+
+        async function testUpdateLecturer() {
+            const token = document.getElementById('updateLecturerToken').value.trim();
+            const resultEl = document.getElementById('updateLecturerResult');
+            
+            if (!token) {
+                showResult(resultEl, 'error', 'Vui lòng nhập Firebase Token!');
+                return;
+            }
+            
+            const data = {
+                role: 'lecturer',
+                lecturer_id: document.getElementById('lecturerId').value,
+                university: document.getElementById('lecturerUniversity').value,
+                department: document.getElementById('department').value,
+                degree: document.getElementById('degree').value,
+                research_interests: document.getElementById('researchInterests').value,
+                phone: document.getElementById('lecturerPhone').value
+            };
+            
+            try {
+                showResult(resultEl, 'info', 'Đang gửi request...');
+                
+                const response = await fetch(`${API_BASE}/update-profile.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                showResult(resultEl, response.ok ? 'success' : 'error', JSON.stringify(result, null, 2));
+            } catch (error) {
+                showResult(resultEl, 'error', `Lỗi: ${error.message}`);
+            }
+        }
+
+        async function testCheckComplete() {
+            const token = document.getElementById('checkToken').value.trim();
+            const resultEl = document.getElementById('checkResult');
+            
+            if (!token) {
+                showResult(resultEl, 'error', 'Vui lòng nhập Firebase Token!');
+                return;
+            }
+            
+            try {
+                showResult(resultEl, 'info', 'Đang gửi request...');
+                
+                const response = await fetch(`${API_BASE}/check-complete.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const result = await response.json();
+                showResult(resultEl, response.ok ? 'success' : 'error', JSON.stringify(result, null, 2));
+            } catch (error) {
+                showResult(resultEl, 'error', `Lỗi: ${error.message}`);
+            }
+        }
+
+        function showResult(element, type, message) {
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.textContent = message;
+        }
+    </script>
+</body>
+</html>
+
