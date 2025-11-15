@@ -33,6 +33,10 @@ build/
 .env.local
 .env.*.local
 
+# API Keys and Config Files
+js/config.js
+config.js
+
 # Logs
 *.log
 logs/

@@ -665,27 +665,38 @@
                 try {
                     await new Promise(resolve => setTimeout(resolve, 500)); // Simulate search
                     
-                    // Load mock papers
-                    const mockResponse = await fetch('../../../data/mock_papers.json');
-                    const mockData = await mockResponse.json();
+                    // Load both mock data files
+                    const [mockResponse1, mockResponse2] = await Promise.all([
+                        fetch('../../../data/mock_papers.json'),
+                        fetch('../../../data/mock_papers_extended.json')
+                    ]);
+                    
+                    const [mockData1, mockData2] = await Promise.all([
+                        mockResponse1.json(),
+                        mockResponse2.json()
+                    ]);
+                    
+                    // Combine all papers (20 + 30 = 50 papers)
+                    const allPapers = [...mockData1.papers, ...mockData2.papers];
                     
                     // Filter papers by query keywords (simple search)
                     const queryLower = query.toLowerCase();
-                    papers = mockData.papers.filter(paper => {
+                    papers = allPapers.filter(paper => {
                         const searchText = `${paper.title} ${paper.abstract} ${paper.fieldsOfStudy.join(' ')}`.toLowerCase();
                         return searchText.includes(queryLower) || 
                                queryLower.split(' ').some(word => word.length > 3 && searchText.includes(word));
                     });
                     
-                    // If no match, return first 10 papers
+                    // If no match, return random 10 papers
                     if (papers.length === 0) {
-                        papers = mockData.papers.slice(0, 10);
+                        const shuffled = [...allPapers].sort(() => 0.5 - Math.random());
+                        papers = shuffled.slice(0, 10);
                     }
                     
                     // Limit to 20 papers
                     papers = papers.slice(0, 20);
                     
-                    console.log(`✅ Found ${papers.length} papers (MOCK DATA)`);
+                    console.log(`✅ Found ${papers.length} papers from ${allPapers.length} total (MOCK DATA)`);
                     loadingText.textContent = `✅ Tìm thấy ${papers.length} bài báo!`;
                     
                 } catch (error) {

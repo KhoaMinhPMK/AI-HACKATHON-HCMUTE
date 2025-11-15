@@ -1,8 +1,9 @@
 {
   "meta": {
-    "description": "Mock data for paper search - realistic Vietnamese research papers",
+    "description": "Mock data for paper search - 50 diverse Vietnamese research papers",
     "total": 50,
-    "updated": "2025-11-15"
+    "updated": "2025-11-15",
+    "categories": ["AI/ML", "Healthcare", "Blockchain", "IoT", "Fintech", "Education", "Agriculture", "Climate", "Cybersecurity"]
   },
   "papers": [
     {

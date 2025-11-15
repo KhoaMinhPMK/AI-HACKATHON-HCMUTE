@@ -89,7 +89,85 @@
 											<path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7 7 7 0 01-7-7M12 18v4" />
 										</svg>
 										<div class="voice-wave-mini" id="voiceWaveMini">
+											<script src="../../js/config.js"></script>
 											<script>
+												// Get Groq API key from config
+												const GROQ_API_KEY = typeof API_CONFIG !== 'undefined' ? API_CONFIG.GROQ_API_KEY : '';
+												
+												if (!GROQ_API_KEY) {
+													console.error('❌ Groq API key not found. Please configure in js/config.js');
+												}
+												
+												class GroqChatClient {
+													constructor(apiKey) {
+														this.apiKey = apiKey;
+														this.baseURL = 'https://api.groq.com/openai/v1/chat/completions';
+														this.model = 'openai/gpt-oss-120b';
+														this.conversationHistory = [];
+													}
+
+													async chat(userMessage) {
+														this.conversationHistory.push({
+															role: 'user',
+															content: userMessage
+														});
+
+														const payload = {
+															model: this.model,
+															messages: this.conversationHistory,
+															temperature: 0.7,
+															max_completion_tokens: 2048,
+															reasoning_effort: 'high',
+															include_reasoning: true
+														};
+
+														try {
+															const response = await fetch(this.baseURL, {
+																method: 'POST',
+																headers: {
+																	'Authorization': `Bearer ${this.apiKey}`,
+																	'Content-Type': 'application/json'
+																},
+																body: JSON.stringify(payload)
+															});
+
+															if (!response.ok) {
+																throw new Error(`API error: ${response.status}`);
+															}
+
+															const data = await response.json();
+															const assistantMessage = data.choices[0].message.content;
+															const reasoning = data.choices[0].message.reasoning;
+
+															this.conversationHistory.push({
+																role: 'assistant',
+																content: assistantMessage
+															});
+
+															console.log('✅ Groq response:', {
+																content_length: assistantMessage.length,
+																reasoning_length: reasoning?.length || 0,
+																tokens: data.usage
+															});
+
+															return {
+																content: assistantMessage,
+																reasoning: reasoning
+															};
+
+														} catch (error) {
+															console.error('❌ Groq error:', error);
+															throw error;
+														}
+													}
+
+													reset() {
+														this.conversationHistory = [];
+													}
+												}
+
+												const groq = new GroqChatClient(GROQ_API_KEY);
+												
 												const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 												const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 												if (recognition) {
@@ -218,28 +296,45 @@
 													toggleSendButton();
 												});
 
-												function sendMessage() {
+												async function sendMessage() {
 													const text = messageInput.value.trim();
 													if (!text) return;
 
+													// Add user message
 													addMessage(text, 'user');
 													messageInput.value = '';
 													autoResize(messageInput);
 													toggleSendButton();
 
-													setTimeout(() => {
-														const reply = 'Đã nhận vấn đề của bạn. Tôi sẽ dựng khung phân tích và đề xuất bước nghiên cứu tiếp theo.';
-														addMessage(reply, 'ai');
+													// Show typing indicator
+													const typingId = addTypingIndicator();
 
-														if ('speechSynthesis' in window) {
-															const utterance = new SpeechSynthesisUtterance(reply);
+													try {
+														// Call Groq API
+														const response = await groq.chat(text);
+														
+														// Remove typing indicator
+														removeTypingIndicator(typingId);
+
+														// Add AI response
+														addMessage(response.content, 'ai', response.reasoning);
+
+														// Optional: Text-to-speech
+														if ('speechSynthesis' in window && response.content.length < 300) {
+															const utterance = new SpeechSynthesisUtterance(response.content);
 															utterance.lang = 'vi-VN';
+															utterance.rate = 1.1;
 															synth.speak(utterance);
 														}
-													}, 700);
+
+													} catch (error) {
+														removeTypingIndicator(typingId);
+														addMessage('⚠️ Xin lỗi, đã xảy ra lỗi kết nối với AI. Vui lòng thử lại.', 'ai');
+														console.error('Send message error:', error);
+													}
 												}
 
-												function addMessage(text, role) {
+												function addMessage(text, role, reasoning = null) {
 													if (messagesContainer.classList.contains('empty')) {
 														messagesContainer.classList.remove('empty');
 														messagesContainer.innerHTML = '';
@@ -254,12 +349,57 @@
 
 													const bubble = document.createElement('div');
 													bubble.className = 'bubble';
-													bubble.textContent = text;
+													
+													// Format text with markdown-like syntax
+													const formattedText = text
+														.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+														.replace(/\n/g, '<br>'); // Line breaks
+													
+													bubble.innerHTML = formattedText;
+
+													// Add reasoning if available
+													if (reasoning && reasoning.length > 0) {
+														const reasoningDiv = document.createElement('details');
+														reasoningDiv.style.cssText = 'margin-top:1.2rem;padding:1rem;background:#f8f9fa;border-radius:0.8rem;font-size:1.3rem;color:#666;';
+														reasoningDiv.innerHTML = `
+															<summary style="cursor:pointer;font-weight:600;color:#5cc0eb;">🤔 Quá trình suy luận (${reasoning.length} chars)</summary>
+															<div style="margin-top:0.8rem;line-height:1.6;white-space:pre-wrap;">${reasoning}</div>
+														`;
+														bubble.appendChild(reasoningDiv);
+													}
 
 													row.appendChild(avatar);
 													row.appendChild(bubble);
 													messagesContainer.appendChild(row);
 													messagesContainer.scrollTop = messagesContainer.scrollHeight;
+												}
+
+												function addTypingIndicator() {
+													const id = 'typing-' + Date.now();
+													const row = document.createElement('div');
+													row.className = 'message-row ai';
+													row.id = id;
+
+													const avatar = document.createElement('div');
+													avatar.className = 'avatar';
+													avatar.textContent = 'AI';
+
+													const bubble = document.createElement('div');
+													bubble.className = 'bubble';
+													bubble.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+													bubble.style.padding = '1.6rem 2rem';
+
+													row.appendChild(avatar);
+													row.appendChild(bubble);
+													messagesContainer.appendChild(row);
+													messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+													return id;
+												}
+
+												function removeTypingIndicator(id) {
+													const el = document.getElementById(id);
+													if (el) el.remove();
 												}
 
 												function startVoiceInput() {
@@ -335,10 +475,12 @@
 												}
 
 												function newChat() {
+													groq.reset(); // Reset conversation history
 													renderEmptyState();
 													messageInput.value = '';
 													autoResize(messageInput);
 													toggleSendButton();
+													showToast('✨ Đã tạo phiên chat mới với AI reasoning model');
 												}
 
 												newChat();
@@ -531,6 +673,30 @@
 					background: rgba(255,255,255,0.04);
 					line-height: 1.7;
 					font-size: 15px;
+				}
+
+				/* Typing indicator animation */
+				.typing-dots {
+					display: flex;
+					gap: 6px;
+					align-items: center;
+				}
+
+				.typing-dots span {
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background: #5cc0eb;
+					animation: typingBounce 1.4s infinite ease-in-out;
+				}
+
+				.typing-dots span:nth-child(1) { animation-delay: 0s; }
+				.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+				.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+				@keyframes typingBounce {
+					0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+					30% { transform: translateY(-10px); opacity: 1; }
 				}
 
 				.message-row.user .bubble {
