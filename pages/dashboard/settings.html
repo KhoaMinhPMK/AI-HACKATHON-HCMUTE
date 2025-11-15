@@ -286,7 +286,7 @@
         
         // API Base URL - PHẢI KHAI BÁO TRƯỚC
         const API_BASE = 'https://bkuteam.site/php/api/profile';
-        const USE_V3 = true; // Đổi thành false để dùng version cũ
+        const USE_MINIMAL = true; // Dùng version minimal (simplest)
         
         let currentUser = null;
         let currentRole = null;
@@ -454,9 +454,9 @@
                 console.log('Sending data:', data);
                 console.log('Token:', token.substring(0, 20) + '...');
                 
-                // Chọn version API
-                const apiEndpoint = USE_V3 ? 
-                    `${API_BASE}/update-profile-v3.php` : 
+                // Chọn version API (dùng minimal - đơn giản nhất)
+                const apiEndpoint = USE_MINIMAL ? 
+                    `${API_BASE}/update-minimal.php` : 
                     `${API_BASE}/update-profile.php`;
                 
                 console.log('Using endpoint:', apiEndpoint);
