@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Profile System - Victoria AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 100rem;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1.6rem;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .test-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .test-card:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+        .test-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .test-card p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        .test-card.success { border-color: #10B981; background: #F0FDF4; }
+        .test-card.error { border-color: #EF4444; background: #FEF2F2; }
+        .test-card.running { border-color: #667eea; background: #EEF2FF; animation: pulse 1s infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .result {
+            background: #1a1a1a;
+            color: #10B981;
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 40rem;
+            overflow-y: auto;
+        }
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+        .status { margin: 1rem 0; padding: 1rem; border-radius: 0.6rem; font-weight: 600; }
+        .status.success { background: #D1FAE5; color: #065F46; }
+        .status.error { background: #FEE2E2; color: #991B1B; }
+        @media (max-width: 768px) {
+            .test-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Victoria AI - Profile System Test Suite</h1>
+
+        <div class="test-grid">
+            <div class="test-card" id="test1" onclick="runTest1()">
+                <h3>1️⃣ PHP Test</h3>
+                <p>Kiểm tra PHP server</p>
+            </div>
+            <div class="test-card" id="test2" onclick="runTest2()">
+                <h3>2️⃣ Database Test</h3>
+                <p>Kiểm tra kết nối DB</p>
+            </div>
+            <div class="test-card" id="test3" onclick="runTest3()">
+                <h3>3️⃣ Update Minimal</h3>
+                <p>Test endpoint cơ bản</p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <button class="btn" onclick="runAllTests()">🚀 Run All Tests</button>
+            <button class="btn" onclick="clearResults()">🗑️ Clear</button>
+        </div>
+
+        <div id="status"></div>
+        <div id="results" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const BASE = 'http://bkuteam.site/php/api/profile';
+        let allResults = [];
+
+        async function runTest1() {
+            const card = document.getElementById('test1');
+            card.className = 'test-card running';
+            
+            try {
+                const res = await fetch(`${BASE}/test-simple.php`);
+                const data = await res.json();
+                
+                allResults.push('TEST 1: PHP Check\n' + JSON.stringify(data, null, 2));
+                card.className = 'test-card success';
+                displayResults();
+            } catch (err) {
+                allResults.push('TEST 1: ERROR\n' + err.message);
+                card.className = 'test-card error';
+                displayResults();
+            }
+        }
+
+        async function runTest2() {
+            const card = document.getElementById('test2');
+            card.className = 'test-card running';
+            
+            try {
+                const res = await fetch(`${BASE}/test-database.php`);
+                const data = await res.json();
+                
+                allResults.push('TEST 2: Database Check\n' + JSON.stringify(data, null, 2));
+                card.className = data.success ? 'test-card success' : 'test-card error';
+                displayResults();
+            } catch (err) {
+                allResults.push('TEST 2: ERROR\n' + err.message);
+                card.className = 'test-card error';
+                displayResults();
+            }
+        }
+
+        async function runTest3() {
+            const card = document.getElementById('test3');
+            card.className = 'test-card running';
+            
+            try {
+                const res = await fetch(`${BASE}/test-update-minimal.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: 'data', role: 'student' })
+                });
+                const data = await res.json();
+                
+                allResults.push('TEST 3: Update Minimal\n' + JSON.stringify(data, null, 2));
+                card.className = 'test-card success';
+                displayResults();
+            } catch (err) {
+                allResults.push('TEST 3: ERROR\n' + err.message);
+                card.className = 'test-card error';
+                displayResults();
+            }
+        }
+
+        async function runAllTests() {
+            allResults = [];
+            clearResults();
+            
+            showStatus('Running tests...', 'info');
+            
+            await runTest1();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await runTest2();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await runTest3();
+            
+            showStatus('All tests completed!', 'success');
+        }
+
+        function displayResults() {
+            const resultsEl = document.getElementById('results');
+            resultsEl.style.display = 'block';
+            resultsEl.textContent = allResults.join('\n\n' + '='.repeat(80) + '\n\n');
+        }
+
+        function clearResults() {
+            allResults = [];
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('status').innerHTML = '';
+            
+            ['test1', 'test2', 'test3'].forEach(id => {
+                document.getElementById(id).className = 'test-card';
+            });
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+        }
+    </script>
+</body>
+</html>
+
