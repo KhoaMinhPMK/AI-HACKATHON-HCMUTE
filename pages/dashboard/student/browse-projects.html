@@ -655,46 +655,83 @@
                 const understanding = await megallm.understandQuery(query);
                 console.log('Query understanding:', understanding);
                 
-                // Step 2: Search papers from REAL API
-                loadingText.textContent = '📚 Đang tìm bài báo khoa học từ Semantic Scholar...';
+                // Step 2: Search papers from REAL API (with caching)
+                loadingText.textContent = '📚 Đang tìm bài báo khoa học...';
                 let papers = [];
+                let fromCache = false;
                 
                 try {
-                    // Use v2 (clean working version) as primary, fallback to simplified
-                    const apiUrls = [
-                        'https://bkuteam.site/php/api/search/papers-search-v2.php',
-                        'https://bkuteam.site/php/api/search/papers-search-simple.php'
-                    ];
+                    // First, check cache
+                    loadingText.textContent = '⚡ Kiểm tra cache...';
+                    const cacheResponse = await fetch(`https://bkuteam.site/php/api/search/cache.php?q=${encodeURIComponent(query)}`);
+                    const cacheData = await cacheResponse.json();
                     
-                    let papersData = null;
-                    let lastError = null;
-                    
-                    for (const apiUrl of apiUrls) {
-                        try {
-                            const papersResponse = await fetch(`${apiUrl}?q=${encodeURIComponent(query)}&limit=20`);
-                            
-                            if (papersResponse.ok) {
-                                const data = await papersResponse.json();
-                                if (data && typeof data === 'object') {
-                                    papersData = data;
-                                    console.log(`✅ Using API: ${apiUrl}`);
-                                    break;
-                                }
-                            }
-                        } catch (err) {
-                            console.warn(`⚠️ ${apiUrl} failed:`, err.message);
-                            lastError = err;
-                        }
-                    }
-                    
-                    if (papersData && papersData.success) {
-                        papers = papersData.results || [];
-                        console.log(`✅ Found ${papers.length} papers`);
-                        if (papersData.message) {
-                            console.info('ℹ️', papersData.message);
-                        }
+                    if (cacheData.success && cacheData.cached) {
+                        // Use cached results
+                        papers = cacheData.results || [];
+                        fromCache = true;
+                        console.log(`⚡ Cache hit! Loaded ${papers.length} papers from cache (hit count: ${cacheData.hit_count})`);
+                        loadingText.textContent = '⚡ Đã tải từ cache - Nhanh hơn 10x!';
                     } else {
-                        throw lastError || new Error('All API endpoints failed');
+                        // No cache, search from API
+                        loadingText.textContent = '📚 Đang tìm từ Semantic Scholar...';
+                        console.log('❌ Cache miss, fetching from API...');
+                        
+                        // Use v2 (clean working version) as primary, fallback to simplified
+                        const apiUrls = [
+                            'https://bkuteam.site/php/api/search/papers-search-v2.php',
+                            'https://bkuteam.site/php/api/search/papers-search-simple.php'
+                        ];
+                        
+                        let papersData = null;
+                        let lastError = null;
+                        
+                        for (const apiUrl of apiUrls) {
+                            try {
+                                const papersResponse = await fetch(`${apiUrl}?q=${encodeURIComponent(query)}&limit=20`);
+                                
+                                if (papersResponse.ok) {
+                                    const data = await papersResponse.json();
+                                    if (data && typeof data === 'object') {
+                                        papersData = data;
+                                        console.log(`✅ Using API: ${apiUrl}`);
+                                        break;
+                                    }
+                                }
+                            } catch (err) {
+                                console.warn(`⚠️ ${apiUrl} failed:`, err.message);
+                                lastError = err;
+                            }
+                        }
+                        
+                        if (papersData && papersData.success) {
+                            papers = papersData.results || [];
+                            console.log(`✅ Found ${papers.length} papers from API`);
+                            
+                            // Save to cache for next time
+                            loadingText.textContent = '💾 Đang lưu vào cache...';
+                            fetch('https://bkuteam.site/php/api/search/cache.php', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({
+                                    query: query,
+                                    results: papers,
+                                    source: 'semantic_scholar'
+                                })
+                            }).then(r => r.json()).then(data => {
+                                if (data.success) {
+                                    console.log('✅ Cache saved for next time');
+                                }
+                            }).catch(err => {
+                                console.warn('⚠️ Cache save failed:', err);
+                            });
+                            
+                            if (papersData.message) {
+                                console.info('ℹ️', papersData.message);
+                            }
+                        } else {
+                            throw lastError || new Error('All API endpoints failed');
+                        }
                     }
                     
                 } catch (error) {
@@ -714,8 +751,13 @@
                 const analysis = await megallm.analyzeTopic(query, papers.slice(0, 5));
                 
                 // Display results
-                displayAIAnalysis(analysis, papers.length + projects.length);
+                displayAIAnalysis(analysis, papers.length + projects.length, fromCache);
                 displayResults(papers, projects);
+                
+                // Show cache indicator if loaded from cache
+                if (fromCache) {
+                    showToast('⚡ Đã tải từ cache - Nhanh hơn 10x!', 'success');
+                }
                 
                 loadingOverlay.style.display = 'none';
                 
@@ -727,12 +769,14 @@
         };
         
         // Display AI analysis
-        function displayAIAnalysis(analysis, totalResults) {
+        function displayAIAnalysis(analysis, totalResults, fromCache = false) {
             const card = document.getElementById('aiInsight');
             const subtitle = document.getElementById('aiInsightSubtitle');
             const content = document.getElementById('aiInsightContent');
             
-            subtitle.textContent = `Phân tích dựa trên ${totalResults} kết quả`;
+            // Update subtitle with cache indicator
+            const cacheIndicator = fromCache ? ' <span style="background:#10b981;color:white;padding:0.4rem 0.8rem;border-radius:0.6rem;font-size:1.2rem;margin-left:0.8rem;">⚡ From Cache</span>' : '';
+            subtitle.innerHTML = `Phân tích dựa trên ${totalResults} kết quả${cacheIndicator}`;
             content.innerHTML = `<p style="line-height: 1.8;">${analysis}</p>`;
             
             card.style.display = 'block';
