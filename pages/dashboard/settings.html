@@ -278,34 +278,30 @@
     <div id="toast" class="toast"></div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        // Import Auth Guard
+        import { requireAuth, getAuthInstance, logout, setupAutoLogout } from "../../js/auth-guard.js";
         
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU",
-            authDomain: "victoria-908a3.firebaseapp.com",
-            projectId: "victoria-908a3",
-            storageBucket: "victoria-908a3.firebasestorage.app",
-            messagingSenderId: "906906328836",
-            appId: "1:906906328836:web:b050d66d1b178f03f4fa51"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+        // Get auth instance
+        const auth = getAuthInstance();
         
         let currentUser = null;
         let currentRole = null;
         
-        // Check auth and load profile
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                await loadProfile(user);
-            } else {
-                window.location.href = '../auth/signin.html';
-            }
-        });
+        // REQUIRE AUTH - Bảo vệ trang Settings
+        try {
+            currentUser = await requireAuth();
+            console.log('✅ Authenticated:', currentUser.email);
+            
+            // Setup auto logout
+            setupAutoLogout(30);
+            
+            // Load profile
+            await loadProfile(currentUser);
+            
+        } catch (error) {
+            console.error('❌ Auth failed:', error);
+            // Auto redirect to signin
+        }
         
         // API Base URL - Đổi URL này nếu cần
         // Thử version 3 nếu version cũ lỗi
@@ -516,8 +512,11 @@
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             if (confirm('Bạn có chắc muốn đăng xuất?')) {
-                await signOut(auth);
-                window.location.href = '../auth/signin.html';
+                try {
+                    await logout(); // Dùng function từ auth-guard
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
             }
         });
     </script>

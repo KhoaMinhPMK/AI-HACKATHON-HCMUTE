@@ -87,30 +87,23 @@
     </div>
 
     <script type="module">
-        // Import Firebase SDKs
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        // Import Firebase SDKs và Auth Guard
+        import { getAuthInstance, handlePostLogin } from '../../js/auth-guard.js';
+        import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
         
         // Import MySQL sync utility
         import { syncUserToMySQL, logActivity } from '../../js/mysql-api-client.js';
         
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU",
-            authDomain: "victoria-908a3.firebaseapp.com",
-            projectId: "victoria-908a3",
-            storageBucket: "victoria-908a3.firebasestorage.app",
-            messagingSenderId: "906906328836",
-            appId: "1:906906328836:web:b050d66d1b178f03f4fa51",
-            measurementId: "G-DGG9GE81Z7"
-        };
-        
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        // Get auth instance từ guard (đã init với persistence)
+        const auth = getAuthInstance();
+        const db = getFirestore(auth.app);
         const googleProvider = new GoogleAuthProvider();
+        
+        // Enable persistent login
+        setPersistence(auth, browserLocalPersistence).catch(err => {
+            console.warn('Persistence error:', err);
+        });
         
         // Save user profile to Firestore
         async function saveUserProfile(user) {
@@ -170,9 +163,9 @@
                 message.innerHTML = '<i class="fas fa-check-circle"></i> Đăng nhập thành công! Đang chuyển hướng...';
                 form.insertBefore(message, form.firstChild);
                 
-                // Redirect after delay
+                // Redirect sau delay - Dùng handlePostLogin để redirect về trang trước đó (nếu có)
                 setTimeout(() => {
-                    window.location.href = '../dashboard/index.html';
+                    handlePostLogin(); // Sẽ redirect về return_url hoặc dashboard
                 }, 1500);
                 
             } catch (error) {
@@ -227,7 +220,7 @@
                 document.querySelector('.auth-container').insertBefore(message, document.querySelector('.auth-brand').nextSibling);
                 
                 setTimeout(() => {
-                    window.location.href = '../dashboard/index.html';
+                    handlePostLogin(); // Smart redirect
                 }, 1500);
                 
             } catch (error) {

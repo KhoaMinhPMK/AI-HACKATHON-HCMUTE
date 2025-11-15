@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Giảng Viên - Victoria AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-container">
+            <div class="logo" onclick="window.location.href='../../../index.html'">
+                <img src="../../../assets/logo_cropped.png" alt="Victoria AI">
+                <span>Victoria AI</span>
+                <span class="role-badge lecturer">Giảng Viên</span>
+            </div>
+            
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="my-projects.html" class="nav-item">
+                    <i class="fas fa-folder"></i>
+                    <span>Đề Tài Của Tôi</span>
+                </a>
+                <a href="browse-students.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Tìm Sinh Viên</span>
+                </a>
+                <a href="applications.html" class="nav-item">
+                    <i class="fas fa-inbox"></i>
+                    <span>Applications</span>
+                    <span class="badge" id="pendingCount">0</span>
+                </a>
+            </nav>
+            
+            <div class="user-menu">
+                <button class="btn-icon" onclick="window.location.href='../settings.html'">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="user-info" id="userInfo">
+                    <img src="" id="userAvatar" class="user-avatar" style="display: none;">
+                    <div class="user-avatar-placeholder" id="avatarPlaceholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span class="user-name" id="userName">Loading...</span>
+                </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <!-- Welcome -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h1>Chào mừng trở lại, <span id="lecturerName">Giảng viên</span>! 👋</h1>
+                    <p>Quản lý đề tài nghiên cứu và kết nối với sinh viên tài năng</p>
+                </div>
+                <button class="btn-primary btn-large" onclick="window.location.href='post-project.html'">
+                    <i class="fas fa-plus"></i>
+                    Đăng Đề Tài Mới
+                </button>
+            </section>
+
+            <!-- Quick Stats -->
+            <section class="stats-grid">
+                <div class="stat-card stat-blue">
+                    <div class="stat-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Đề Tài Đang Mở</h3>
+                        <p class="stat-number" id="activeProjects">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-orange">
+                    <div class="stat-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Applications Chờ</h3>
+                        <p class="stat-number" id="pendingApps">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-green">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Sinh Viên Hiện Tại</h3>
+                        <p class="stat-number" id="currentStudents">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-purple">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Đã Hoàn Thành</h3>
+                        <p class="stat-number" id="completedProjects">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pending Applications -->
+            <section class="section-card" id="pendingApplicationsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-inbox"></i>
+                        Applications Đang Chờ Xét Duyệt
+                    </h2>
+                    <a href="applications.html" class="btn-outline-sm">Xem Tất Cả</a>
+                </div>
+                <div id="applicationsList" class="applications-list">
+                    <!-- Applications will be loaded here -->
+                </div>
+            </section>
+
+            <!-- My Projects -->
+            <section class="section-card">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-folder"></i>
+                        Đề Tài Của Tôi
+                    </h2>
+                    <a href="my-projects.html" class="btn-outline-sm">Xem Tất Cả</a>
+                </div>
+                <div id="projectsList" class="projects-grid">
+                    <!-- Projects will be loaded here -->
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>Chưa có đề tài nào</p>
+                        <button class="btn-primary" onclick="window.location.href='post-project.html'">
+                            <i class="fas fa-plus"></i>
+                            Đăng Đề Tài Đầu Tiên
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Browse Students -->
+            <section class="section-card">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-user-graduate"></i>
+                        Sinh Viên Phù Hợp
+                    </h2>
+                    <a href="browse-students.html" class="btn-outline-sm">Xem Tất Cả</a>
+                </div>
+                <div id="studentsList" class="students-grid">
+                    <!-- Students will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Đang tải...</p>
+    </div>
+
+    <script type="module">
+        // Import auth và role guard
+        import { requireSpecificRole, getFullProfile } from "../../../js/role-gate.js";
+        import { logout, setupAutoLogout } from "../../../js/auth-guard.js";
+        
+        // REQUIRE LECTURER ROLE
+        let userData;
+        try {
+            const { user, role, profile } = await requireSpecificRole('lecturer');
+            userData = { user, role, profile };
+            
+            console.log('✅ Lecturer authenticated:', user.email);
+            
+            // Setup auto logout
+            setupAutoLogout(30);
+            
+            // Load dashboard data
+            await loadDashboardData(user, profile);
+            
+        } catch (error) {
+            console.error('❌ Auth/Role check failed:', error);
+            // Auto redirect đã xử lý trong requireSpecificRole
+        }
+        
+        // Load dashboard data
+        async function loadDashboardData(user, profile) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            try {
+                // Update UI
+                document.getElementById('lecturerName').textContent = user.displayName || 'Giảng viên';
+                document.getElementById('userName').textContent = user.displayName || 'User';
+                
+                if (user.photoURL) {
+                    document.getElementById('userAvatar').src = user.photoURL;
+                    document.getElementById('userAvatar').style.display = 'block';
+                    document.getElementById('avatarPlaceholder').style.display = 'none';
+                }
+                
+                // TODO: Load stats from API
+                // await loadStats(user);
+                // await loadProjects(user);
+                // await loadPendingApplications(user);
+                // await loadRecommendedStudents(user);
+                
+                // Mock data for now
+                document.getElementById('activeProjects').textContent = '3';
+                document.getElementById('pendingApps').textContent = '5';
+                document.getElementById('currentStudents').textContent = '7';
+                document.getElementById('completedProjects').textContent = '2';
+                
+                loadingOverlay.style.display = 'none';
+                
+            } catch (error) {
+                console.error('❌ Load dashboard error:', error);
+                loadingOverlay.style.display = 'none';
+            }
+        }
+        
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                await logout();
+            }
+        });
+    </script>
+</body>
+</html>
+

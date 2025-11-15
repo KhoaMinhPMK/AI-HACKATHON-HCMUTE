@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Victoria AI</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../../css/components/skeleton.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -36,7 +37,7 @@
 
     <!-- Main Content -->
     <main class="dashboard-main">
-        <div class="dashboard-container">
+        <div class="dashboard-container" id="dashboardContainer">
             <!-- Profile Incomplete Alert -->
             <div class="profile-alert" id="profileAlert" style="display: none;">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -207,25 +208,30 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        // Import Auth Guard để bảo vệ trang
+        import { requireAuth, getAuthInstance, logout, setupAutoLogout } from "../../js/auth-guard.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
         
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA8zc27rx6YIJoyoXyf7dugS-zCjazE6lU",
-            authDomain: "victoria-908a3.firebaseapp.com",
-            projectId: "victoria-908a3",
-            storageBucket: "victoria-908a3.firebasestorage.app",
-            messagingSenderId: "906906328836",
-            appId: "1:906906328836:web:b050d66d1b178f03f4fa51",
-            measurementId: "G-DGG9GE81Z7"
-        };
+        // Get auth instance from guard
+        const auth = getAuthInstance();
+        const db = getFirestore(auth.app);
         
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        // REQUIRE AUTH - Redirect nếu chưa đăng nhập
+        let currentUser;
+        try {
+            currentUser = await requireAuth();
+            console.log('✅ Authenticated user:', currentUser.email);
+            
+            // Setup auto logout sau 30 phút không hoạt động
+            setupAutoLogout(30);
+            
+            // Load user data
+            await loadUserData(currentUser);
+            
+        } catch (error) {
+            console.error('❌ Auth failed:', error);
+            // requireAuth đã tự động redirect, không cần làm gì
+        }
         
         // Save or update user profile in Firestore
         async function saveUserProfile(user) {
@@ -277,14 +283,11 @@
             });
         }
         
-        // Check authentication and load user data
-        onAuthStateChanged(auth, async (user) => {
+        // Load user data (gọi sau khi requireAuth pass)
+        async function loadUserData(user) {
             const loadingOverlay = document.getElementById('loadingOverlay');
             
-            if (user) {
-                // User is signed in
-                console.log('User logged in:', user);
-                
+            try {
                 // Save/update user profile in Firestore (non-blocking)
                 saveUserProfile(user).catch(err => {
                     console.warn('Firestore sync skipped:', err.code);
@@ -347,22 +350,21 @@
                     metadata: user.metadata
                 }, null, 2);
                 
-                // Hide loading
+                // Hide loading và add fade-in animation
                 loadingOverlay.style.display = 'none';
+                document.getElementById('dashboardContainer').classList.add('fade-in');
                 
-            } else {
-                // No user signed in, redirect to signin
-                console.log('No user logged in, redirecting...');
-                window.location.href = '../auth/signin.html';
+            } catch (error) {
+                console.error('❌ Load data error:', error);
+                loadingOverlay.style.display = 'none';
             }
-        });
+        }
         
         // Logout handler
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             if (confirm('Bạn có chắc muốn đăng xuất?')) {
                 try {
-                    await signOut(auth);
-                    window.location.href = '../auth/signin.html';
+                    await logout(); // Dùng function từ auth-guard
                 } catch (error) {
                     console.error('Logout error:', error);
                     alert('Đăng xuất thất bại: ' + error.message);
