@@ -308,7 +308,9 @@
         });
         
         // API Base URL - Đổi URL này nếu cần
+        // Thử version 3 nếu version cũ lỗi
         const API_BASE = 'https://bkuteam.site/php/api/profile';
+        const USE_V3 = true; // Đổi thành false để dùng version cũ
         
         // Load profile data
         async function loadProfile(user) {
@@ -457,7 +459,14 @@
                 console.log('Sending data:', data);
                 console.log('Token:', token.substring(0, 20) + '...');
                 
-                const response = await fetch(`${API_BASE}/update-profile.php`, {
+                // Chọn version API
+                const apiEndpoint = USE_V3 ? 
+                    `${API_BASE}/update-profile-v3.php` : 
+                    `${API_BASE}/update-profile.php`;
+                
+                console.log('Using endpoint:', apiEndpoint);
+                
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
