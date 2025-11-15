@@ -664,26 +664,46 @@
                 let papers = [];
                 
                 try {
-                    const apiUrl = 'https://bkuteam.site/php/api/search/papers-search.php';
-                    const papersResponse = await fetch(`${apiUrl}?q=${encodeURIComponent(query)}&limit=20`);
+                    // Try real API first, fall back to simplified version if fails
+                    const apiUrls = [
+                        'https://bkuteam.site/php/api/search/papers-search.php',
+                        'https://bkuteam.site/php/api/search/papers-search-simple.php'
+                    ];
                     
-                    if (!papersResponse.ok) {
-                        throw new Error(`API returned ${papersResponse.status}`);
+                    let papersData = null;
+                    let lastError = null;
+                    
+                    for (const apiUrl of apiUrls) {
+                        try {
+                            const papersResponse = await fetch(`${apiUrl}?q=${encodeURIComponent(query)}&limit=20`);
+                            
+                            if (papersResponse.ok) {
+                                const data = await papersResponse.json();
+                                if (data && typeof data === 'object') {
+                                    papersData = data;
+                                    console.log(`✅ Using API: ${apiUrl}`);
+                                    break;
+                                }
+                            }
+                        } catch (err) {
+                            console.warn(`⚠️ ${apiUrl} failed:`, err.message);
+                            lastError = err;
+                        }
                     }
                     
-                    const papersData = await papersResponse.json();
-                    
-                    if (papersData.success) {
+                    if (papersData && papersData.success) {
                         papers = papersData.results || [];
-                        console.log(`✅ Found ${papers.length} papers from ${papersData.sources?.join(', ')}`);
+                        console.log(`✅ Found ${papers.length} papers`);
+                        if (papersData.message) {
+                            console.info('ℹ️', papersData.message);
+                        }
                     } else {
-                        console.error('❌ API error:', papersData.message);
-                        throw new Error(papersData.message || 'Search failed');
+                        throw lastError || new Error('All API endpoints failed');
                     }
                     
                 } catch (error) {
                     console.error('❌ Papers search failed:', error);
-                    showToast('Không tìm được bài báo. Vui lòng thử lại sau.', 'error');
+                    showToast('Tạm thời không tìm được bài báo từ API', 'warning');
                     // Continue with empty papers array
                 }
                 
