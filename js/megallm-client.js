@@ -126,13 +126,21 @@ Return JSON format:
         
         try {
             const content = response.choices[0].message.content;
-            return JSON.parse(content);
+            const parsed = JSON.parse(content);
+            
+            // If fallback mode, add notice
+            if (response._fallback) {
+                console.warn('⚠️ Using fallback query understanding');
+            }
+            
+            return parsed;
         } catch (e) {
             console.error('Parse error:', e);
             return {
                 terms: [query],
-                field: 'unknown',
-                intent: query
+                field: 'General',
+                intent: query,
+                suggested_queries: [query]
             };
         }
     }
@@ -167,9 +175,9 @@ Return in Vietnamese, be specific and actionable.`
             }
         ];
         
-        const response = await this.chat(messages, 'claude-opus-4-1-20250805', {
-            temperature: 0.4,
-            maxTokens: 3000
+        const response = await this.chat(messages, 'claude-3.5-sonnet', {
+            temperature: 0.7,
+            maxTokens: 800
         });
         
         return response.choices[0].message.content;
