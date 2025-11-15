@@ -35,6 +35,11 @@
 @import url('./sections/chatbot.css');
 @import url('./sections/auth.css');
 
+/* BSI Module Sections */
+@import url('./sections/bsi-module.css');
+@import url('./sections/bsi-controls.css');
+@import url('./sections/bsi-results.css');
+
 /* Utility Classes */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
@@ -72,3 +77,72 @@
 .hidden { display: none; }
 .visible { display: block; }
 .invisible { visibility: hidden; }
+
+/* ============================================
+   Scroll Animation Effects
+   ============================================ */
+
+/* Auto Blur Effect - Inspired by scroll_animation */
+.autoBLur {
+    animation: autoBLurAnimation linear both;
+    animation-timeline: view();
+}
+
+@keyframes autoBLurAnimation {
+    0% {
+        filter: blur(40px);
+        opacity: 0.3;
+    }
+    45%, 55% {
+        filter: blur(0px);
+        opacity: 1;
+    }
+    100% {
+        filter: blur(40px);
+        opacity: 0.3;
+    }
+}
+
+/* Auto Show Effect */
+.autoShow {
+    animation: autoShowAnimation both;
+    animation-timeline: view(70% 5%);
+}
+
+@keyframes autoShowAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(200px) scale(0.3);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Auto Rotate Effect */
+.autoRotate {
+    animation: autoRotateAnimation;
+    animation-timeline: view();
+}
+
+@keyframes autoRotateAnimation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Fallback for browsers without animation-timeline support */
+@supports not (animation-timeline: view()) {
+    .autoBLur,
+    .autoShow,
+    .autoRotate {
+        animation: none;
+        opacity: 1;
+        filter: none;
+        transform: none;
+    }
+}

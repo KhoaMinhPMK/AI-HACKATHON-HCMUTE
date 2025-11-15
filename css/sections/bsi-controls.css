@@ -1,0 +1,263 @@
+/* ===================================
+   BSI CONTROLS - Control Panel & Buttons
+   Right sidebar control panel styling
+   =================================== */
+
+/* Control Panel - Right Sidebar */
+.bsi-control-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    padding: 2rem;
+    height: fit-content;
+    position: sticky;
+    top: calc(var(--header-height, 80px) + 2rem);
+    box-shadow: var(--shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.3));
+}
+
+.control-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-header i {
+    font-size: 2.4rem;
+    color: var(--accent-purple, #B392F0);
+}
+
+.control-header h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary, #ffffff);
+}
+
+/* Control Buttons Grid */
+.control-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.control-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.2rem;
+    color: var(--text-primary, #ffffff);
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-base, 0.3s);
+}
+
+.control-btn i {
+    font-size: 2rem;
+}
+
+.control-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.control-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Button Variants */
+.control-btn.btn-play {
+    border-color: rgba(52, 211, 153, 0.3);
+}
+
+.control-btn.btn-play:hover:not(:disabled) {
+    background: rgba(52, 211, 153, 0.2);
+    border-color: #34D399;
+    color: #34D399;
+}
+
+.control-btn.btn-pause {
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+.control-btn.btn-pause:hover:not(:disabled) {
+    background: rgba(251, 191, 36, 0.2);
+    border-color: #FBBF24;
+    color: #FBBF24;
+}
+
+.control-btn.btn-stop {
+    border-color: rgba(255, 107, 157, 0.3);
+}
+
+.control-btn.btn-stop:hover:not(:disabled) {
+    background: rgba(255, 107, 157, 0.2);
+    border-color: #FF6B9D;
+    color: #FF6B9D;
+}
+
+.control-btn.btn-reset {
+    border-color: rgba(92, 192, 235, 0.3);
+}
+
+.control-btn.btn-reset:hover:not(:disabled) {
+    background: rgba(92, 192, 235, 0.2);
+    border-color: var(--main-color, #5cc0eb);
+    color: var(--main-color, #5cc0eb);
+}
+
+/* Divider */
+.control-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 2rem 0;
+}
+
+/* Speed Control */
+.control-speed {
+    margin-bottom: 2rem;
+}
+
+.control-speed label {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary, #ffffff);
+    margin-bottom: 1rem;
+}
+
+.speed-buttons {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.speed-btn {
+    flex: 1;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.8rem;
+    color: var(--text-secondary, #94a3b8);
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast, 0.2s);
+}
+
+.speed-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--main-color, #5cc0eb);
+}
+
+.speed-btn.active {
+    background: linear-gradient(135deg, var(--main-color, #5cc0eb), var(--accent-purple, #B392F0));
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 12px rgba(92, 192, 235, 0.4);
+}
+
+/* Live Statistics */
+.control-stats {
+    margin-bottom: 2rem;
+}
+
+.control-stats h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary, #ffffff);
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.stat-item label {
+    font-size: 1.3rem;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--main-color, #5cc0eb);
+}
+
+/* Export Button */
+.control-export {
+    width: 100%;
+}
+
+.control-export .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Button Extensions (for main phase actions) */
+.btn-primary {
+    background: linear-gradient(135deg, var(--main-color, #5cc0eb), var(--accent-purple, #B392F0));
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 8px 24px rgba(92, 192, 235, 0.4);
+}
+
+.btn-large {
+    padding: 1.6rem 3rem;
+    font-size: 1.6rem;
+}
+
+.btn-large i {
+    font-size: 2rem;
+    margin-right: 0.8rem;
+}
+
+.btn-small {
+    padding: 0.8rem 1.6rem;
+    font-size: 1.3rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .bsi-control-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .control-header {
+        grid-column: 1 / -1;
+    }
+    
+    .control-buttons {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .bsi-control-panel {
+        grid-template-columns: 1fr;
+    }
+    
+    .control-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

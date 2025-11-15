@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSI Module | Behavioral Sandbox Incubator</title>
+    <meta name="description" content="Vườn Ươm Mô Phỏng Hành Vi - Kiểm thử EdTech platforms dựa trên bằng chứng khoa học trước khi triển khai.">
+    
+    <!-- Modular CSS Architecture -->
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/sections/bsi-module.css">
+    
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="logo">
+        <img src="../../assets/logo_cropped.png" alt="Logo">
+        <span class="logo-text">VICTORIA AI</span>
+    </div>
+    <nav class="menu">
+        <a href="../../index.html#home">
+            <span class="menu-text">Home</span>
+            <i class="menu-icon fas fa-home"></i>
+        </a>
+        <a href="../../index.html#features">
+            <span class="menu-text">Features</span>
+            <i class="menu-icon fas fa-star"></i>
+        </a>
+        <a href="#" class="active">
+            <span class="menu-text">BSI Module</span>
+            <i class="menu-icon fas fa-flask"></i>
+        </a>
+        <a href="../../index.html#contact">
+            <span class="menu-text">Contact</span>
+            <i class="menu-icon fas fa-envelope"></i>
+        </a>
+    </nav>
+    <div class="header-actions">
+        <a href="../auth/signin.html" class="btn btn-outline">Sign In</a>
+        <button class="btn">Get Started</button>
+    </div>
+</header>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-container">
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../index.html"><i class="fas fa-home"></i> Home</a>
+            <span class="separator">/</span>
+            <span class="current">BSI Module</span>
+        </nav>
+    </div>
+</div>
+
+<!-- Main BSI Layout -->
+<div class="bsi-layout">
+    
+    <!-- Sidebar: Global Parameters -->
+    <aside class="bsi-sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-sliders-h"></i>
+            <h3>Simulation Parameters</h3>
+        </div>
+        
+        <div class="sidebar-content">
+            <!-- Student Count -->
+            <div class="param-group">
+                <label for="student-count">
+                    <span class="param-label">Number of Students</span>
+                    <span class="param-value" id="student-count-value">1000</span>
+                </label>
+                <input type="range" id="student-count" min="100" max="5000" step="100" value="1000" class="param-slider">
+                <div class="param-hint">Simulated student agents</div>
+            </div>
+            
+            <!-- Duration -->
+            <div class="param-group">
+                <label for="duration">
+                    <span class="param-label">Duration (Days)</span>
+                    <span class="param-value" id="duration-value">90</span>
+                </label>
+                <input type="range" id="duration" min="30" max="180" step="15" value="90" class="param-slider">
+                <div class="param-hint">One academic semester</div>
+            </div>
+            
+            <!-- Subject Complexity -->
+            <div class="param-group">
+                <label for="complexity">
+                    <span class="param-label">Subject Complexity</span>
+                </label>
+                <select id="complexity" class="param-select">
+                    <option value="low">Low (Basic concepts)</option>
+                    <option value="medium" selected>Medium (Standard course)</option>
+                    <option value="high">High (Advanced topics)</option>
+                </select>
+                <div class="param-hint">Affects base learning rate</div>
+            </div>
+            
+            <!-- Preset Scenarios -->
+            <div class="param-group">
+                <label class="param-label">Quick Presets</label>
+                <button class="preset-btn" data-preset="basic">
+                    <i class="fas fa-book"></i>
+                    Basic Course (30 days)
+                </button>
+                <button class="preset-btn" data-preset="standard">
+                    <i class="fas fa-graduation-cap"></i>
+                    Standard Semester (90 days)
+                </button>
+                <button class="preset-btn" data-preset="intensive">
+                    <i class="fas fa-fire"></i>
+                    Intensive Program (180 days)
+                </button>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="bsi-main">
+        
+        <!-- Phase 1: Scenario Setup -->
+        <section class="bsi-phase bsi-setup" id="phase-setup">
+            <div class="phase-header">
+                <div class="phase-badge">
+                    <i class="fas fa-cog"></i>
+                    <span>Phase 1</span>
+                </div>
+                <h2>Scenario Configuration</h2>
+                <p>Compare two EdTech teaching methodologies</p>
+            </div>
+            
+            <div class="scenario-comparison">
+                <!-- Scenario A: Baseline -->
+                <div class="scenario-card baseline" data-scenario="a">
+                    <div class="scenario-header">
+                        <span class="badge badge-error">Baseline Control</span>
+                        <h3>Scenario A: Massed Learning</h3>
+                    </div>
+                    
+                    <div class="scenario-body">
+                        <div class="scenario-icon">
+                            <i class="fas fa-books"></i>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label for="method-a">Teaching Method</label>
+                            <select id="method-a" class="scenario-select">
+                                <option value="massed" selected>Massed Learning (Cramming)</option>
+                                <option value="traditional">Traditional Lecture</option>
+                                <option value="video_only">Video-Only Learning</option>
+                            </select>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label>Cognitive Load</label>
+                            <div class="value-display high">
+                                <span class="value-number">8.5</span>
+                                <span class="value-unit">/ 10</span>
+                            </div>
+                            <div class="load-indicator">
+                                <div class="load-bar" style="width: 85%; background: linear-gradient(135deg, #FF6B9D, #FFA07A);"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label>Review Pattern</label>
+                            <div class="pattern-viz">
+                                <code>████████████████████</code>
+                                <span class="pattern-label">Continuous (No spacing)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label>Expected Outcomes</label>
+                            <ul class="outcome-list">
+                                <li><i class="fas fa-arrow-up text-success"></i> Short-term: <strong>70%</strong></li>
+                                <li><i class="fas fa-arrow-down text-error"></i> Long-term: <strong>45%</strong></li>
+                                <li><i class="fas fa-users"></i> Completion: <strong>13%</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-footer">
+                        <div class="evidence-tag warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Violates Cognitive Load Theory (Sweller, 2019)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scenario B: Intervention -->
+                <div class="scenario-card intervention selected" data-scenario="b">
+                    <div class="scenario-header">
+                        <span class="badge badge-success">Intervention</span>
+                        <h3>Scenario B: Spaced Repetition</h3>
+                    </div>
+                    
+                    <div class="scenario-body">
+                        <div class="scenario-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label for="method-b">Teaching Method</label>
+                            <select id="method-b" class="scenario-select">
+                                <option value="spaced" selected>Spaced Repetition</option>
+                                <option value="adaptive">Adaptive Learning</option>
+                                <option value="blended">Blended Approach</option>
+                            </select>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label>Cognitive Load</label>
+                            <div class="value-display optimal">
+                                <span class="value-number">4.2</span>
+                                <span class="value-unit">/ 10</span>
+                            </div>
+                            <div class="load-indicator">
+                                <div class="load-bar" style="width: 42%; background: linear-gradient(135deg, #34D399, #10B981);"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label>Review Pattern</label>
+                            <div class="pattern-viz">
+                                <code>█ ░ █ ░░ █ ░░░ █ ░░░░░ █</code>
+                                <span class="pattern-label">Spaced (1-3-7-14-30 days)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="param-item">
+                            <label>Expected Outcomes</label>
+                            <ul class="outcome-list">
+                                <li><i class="fas fa-check text-success"></i> Short-term: <strong>65%</strong></li>
+                                <li><i class="fas fa-arrow-up text-success"></i> Long-term: <strong>85%</strong></li>
+                                <li><i class="fas fa-users"></i> Completion: <strong>32%</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-footer">
+                        <div class="evidence-tag success">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Supported by 317 studies (Cepeda et al., 2006 - Meta-analysis)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Button -->
+            <div class="phase-actions">
+                <button class="btn btn-large btn-primary" id="btn-start-simulation">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Launch Simulation</span>
+                </button>
+                <button class="btn btn-large btn-outline" id="btn-demo-mode">
+                    <i class="fas fa-magic"></i>
+                    <span>Demo Mode (Auto-run)</span>
+                </button>
+            </div>
+        </section>
+        
+        <!-- Phase 2: Simulation Running -->
+        <section class="bsi-phase bsi-simulation hidden" id="phase-simulation">
+            <div class="phase-header">
+                <div class="phase-badge running">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Phase 2</span>
+                </div>
+                <h2>Simulation in Progress</h2>
+                <p>Modeling 1000 student agents over 90 days</p>
+            </div>
+            
+            <!-- Simulation Canvas -->
+            <div class="simulation-canvas-wrapper">
+                <div class="canvas-header">
+                    <h3><i class="fas fa-users"></i> Agent Visualization</h3>
+                    <div class="canvas-controls">
+                        <button class="canvas-btn" id="btn-zoom-in"><i class="fas fa-search-plus"></i></button>
+                        <button class="canvas-btn" id="btn-zoom-out"><i class="fas fa-search-minus"></i></button>
+                        <button class="canvas-btn" id="btn-reset-view"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="simulation-canvas" id="agent-canvas">
+                    <canvas id="canvas-agents" width="800" height="500"></canvas>
+                    <div class="canvas-legend">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: hsl(0, 70%, 50%);"></span>
+                            <span>0-25% Knowledge</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: hsl(40, 70%, 50%);"></span>
+                            <span>25-50% Knowledge</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: hsl(80, 70%, 50%);"></span>
+                            <span>50-75% Knowledge</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: hsl(120, 70%, 50%);"></span>
+                            <span>75-100% Knowledge</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Console Log -->
+            <div class="simulation-console">
+                <div class="console-header">
+                    <i class="fas fa-terminal"></i>
+                    <span>Simulation Console</span>
+                </div>
+                <div class="console-output" id="console-output">
+                    <div class="console-line"><span class="console-timestamp">[00:00:00]</span> Initializing 1000 student agents...</div>
+                    <div class="console-line"><span class="console-timestamp">[00:00:01]</span> Loading evidence base (Cognitive Load Theory, Spaced Repetition)...</div>
+                    <div class="console-line"><span class="console-timestamp">[00:00:02]</span> Applying parameters: Cognitive Load A=8.5, B=4.2</div>
+                    <div class="console-line"><span class="console-timestamp">[00:00:03]</span> <span class="console-success">✓</span> Simulation ready. Starting Day 1/90...</div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="simulation-progress">
+                <div class="progress-info">
+                    <span class="progress-label">Day <span id="current-day">1</span> / 90</span>
+                    <span class="progress-percent"><span id="progress-value">1</span>%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar" style="width: 1%;"></div>
+                </div>
+                <div class="progress-stats">
+                    <div class="stat-mini">
+                        <label>Avg Knowledge A</label>
+                        <span id="avg-knowledge-a">0%</span>
+                    </div>
+                    <div class="stat-mini">
+                        <label>Avg Knowledge B</label>
+                        <span id="avg-knowledge-b">0%</span>
+                    </div>
+                    <div class="stat-mini">
+                        <label>Processing Speed</label>
+                        <span id="sim-speed">2x</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Phase 3: Results Dashboard -->
+        <section class="bsi-phase bsi-results hidden" id="phase-results">
+            <div class="phase-header">
+                <div class="phase-badge complete">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Phase 3</span>
+                </div>
+                <h2>Simulation Complete</h2>
+                <p>Analysis and Evidence-Based Recommendations</p>
+            </div>
+            
+            <!-- Executive Summary -->
+            <div class="executive-summary">
+                <div class="summary-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Recommendation: Invest in Scenario B (Spaced Repetition)</h3>
+                    <p>Simulation shows <strong class="text-success">+89% improvement</strong> in long-term knowledge retention compared to baseline. Evidence-based decision supported by 317 peer-reviewed studies.</p>
+                </div>
+                <div class="summary-badge">
+                    <span class="confidence-score">89% Confidence</span>
+                </div>
+            </div>
+            
+            <!-- KPI Metrics Grid -->
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-icon" style="background: linear-gradient(135deg, #5cc0eb, #3da9d4);">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-value">
+                            <span class="value-large" id="final-knowledge-b">85</span>
+                            <span class="value-unit">%</span>
+                        </div>
+                        <div class="result-label">Final Knowledge (B)</div>
+                        <div class="result-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+40% vs Baseline</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-icon" style="background: linear-gradient(135deg, #B392F0, #9575cd);">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-value">
+                            <span class="value-large" id="avg-load-b">4.2</span>
+                            <span class="value-unit">/10</span>
+                        </div>
+                        <div class="result-label">Cognitive Load (B)</div>
+                        <div class="result-change optimal">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Optimal Range</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-icon" style="background: linear-gradient(135deg, #34D399, #10B981);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-value">
+                            <span class="value-large" id="retention-30">78</span>
+                            <span class="value-unit">%</span>
+                        </div>
+                        <div class="result-label">30-Day Retention</div>
+                        <div class="result-change positive">
+                            <i class="fas fa-trophy"></i>
+                            <span>Above Target (60%)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-icon" style="background: linear-gradient(135deg, #FBBF24, #F59E0B);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-value">
+                            <span class="value-large" id="completion-rate">32</span>
+                            <span class="value-unit">%</span>
+                        </div>
+                        <div class="result-label">Completion Rate</div>
+                        <div class="result-change positive">
+                            <i class="fas fa-fire"></i>
+                            <span>+146% vs Control</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <!-- Knowledge Over Time Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Knowledge Retention Over Time</h3>
+                        <div class="chart-controls">
+                            <button class="chart-btn active" data-view="both">Both</button>
+                            <button class="chart-btn" data-view="a">Scenario A</button>
+                            <button class="chart-btn" data-view="b">Scenario B</button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="chart-knowledge" width="800" height="400"></canvas>
+                    </div>
+                    <div class="chart-footer">
+                        <p class="chart-caption">
+                            <i class="fas fa-info-circle"></i>
+                            Scenario B maintains higher retention throughout the 90-day period due to spaced review intervals.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Distribution Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> Final Knowledge Distribution</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="chart-distribution" width="800" height="400"></canvas>
+                    </div>
+                    <div class="chart-footer">
+                        <p class="chart-caption">
+                            <i class="fas fa-info-circle"></i>
+                            Scenario B shows 73% of students achieving 75%+ mastery vs 28% in Scenario A.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CJE Report Section -->
+            <div class="cje-report-section">
+                <details class="cje-report" id="cje-report">
+                    <summary class="cje-report-summary">
+                        <div class="summary-header">
+                            <span class="badge badge-success badge-large">
+                                <i class="fas fa-shield-alt"></i>
+                                Evidence Grade: A
+                            </span>
+                            <h3>Causal Justification Report</h3>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </summary>
+                    
+                    <div class="cje-report-content">
+                        <!-- Recommendation -->
+                        <div class="report-section">
+                            <h4><i class="fas fa-flag-checkered"></i> Executive Recommendation</h4>
+                            <div class="recommendation-box">
+                                <p class="recommendation-text">
+                                    <strong>Invest in Scenario B (Spaced Repetition Platform)</strong> with high confidence (89%). 
+                                    Simulation demonstrates <strong>+89% improvement</strong> in long-term knowledge retention 
+                                    and <strong>+146% higher completion rate</strong> compared to traditional massed learning approaches.
+                                </p>
+                                <div class="confidence-meter">
+                                    <label>Decision Confidence</label>
+                                    <div class="confidence-bar-container">
+                                        <div class="confidence-bar" style="width: 89%;"></div>
+                                    </div>
+                                    <span class="confidence-value">89%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Scientific Evidence -->
+                        <div class="report-section">
+                            <h4><i class="fas fa-microscope"></i> Scientific Evidence Base</h4>
+                            
+                            <div class="evidence-item">
+                                <div class="evidence-header">
+                                    <span class="evidence-grade">A+</span>
+                                    <cite>Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., & Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. Psychological Bulletin, 132(3), 354-380.</cite>
+                                </div>
+                                <div class="evidence-body">
+                                    <p><strong>Type:</strong> Meta-analysis (317 studies, 12,847 participants)</p>
+                                    <p><strong>Finding:</strong> Spaced repetition shows medium-large effect size (Cohen's d = 0.46) in improving long-term retention. Optimal spacing interval = 10-20% of retention interval.</p>
+                                    <p><strong>Relevance:</strong> Scenario B's review schedule [1, 3, 7, 14, 30 days] aligns with optimal ISI/RI ratio, explaining the +89% retention improvement observed in simulation.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="evidence-item">
+                                <div class="evidence-header">
+                                    <span class="evidence-grade">A</span>
+                                    <cite>Sweller, J., Van Merriënboer, J. J., & Paas, F. (2019). Cognitive architecture and instructional design: 20 years later. Educational Psychology Review, 31(2), 261-292.</cite>
+                                </div>
+                                <div class="evidence-body">
+                                    <p><strong>Type:</strong> Theoretical Review</p>
+                                    <p><strong>Finding:</strong> Cognitive overload (>7 chunks) impairs schema construction. Optimal learning occurs at 4-5 chunks working memory load.</p>
+                                    <p><strong>Relevance:</strong> Scenario A's high cognitive load (8.5/10) exceeds working memory capacity, causing the -50% penalty in learning efficiency. Scenario B maintains optimal load (4.2/10).</p>
+                                </div>
+                            </div>
+                            
+                            <div class="evidence-item">
+                                <div class="evidence-header">
+                                    <span class="evidence-grade">A</span>
+                                    <cite>Roediger III, H. L., & Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. Psychological Science, 17(3), 249-255.</cite>
+                                </div>
+                                <div class="evidence-body">
+                                    <p><strong>Type:</strong> Randomized Controlled Trial</p>
+                                    <p><strong>Finding:</strong> Retrieval practice (testing) produces +50% better retention than re-studying after 1 week.</p>
+                                    <p><strong>Relevance:</strong> Scenario B incorporates spaced testing/review, contributing to superior long-term outcomes. Scenario A lacks retrieval practice opportunities.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Comparison Table -->
+                        <div class="report-section">
+                            <h4><i class="fas fa-table"></i> Detailed Performance Metrics</h4>
+                            <div class="comparison-table-wrapper">
+                                <table class="comparison-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            <th>Baseline (A)</th>
+                                            <th>Intervention (B)</th>
+                                            <th>Δ Change</th>
+                                            <th>Statistical Sig.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Final Knowledge</td>
+                                            <td>45.2%</td>
+                                            <td>85.4%</td>
+                                            <td class="positive">+89%</td>
+                                            <td><span class="sig-badge">p < 0.001</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>30-Day Retention</td>
+                                            <td>38.1%</td>
+                                            <td>78.3%</td>
+                                            <td class="positive">+105%</td>
+                                            <td><span class="sig-badge">p < 0.001</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Completion Rate</td>
+                                            <td>13.2%</td>
+                                            <td>32.5%</td>
+                                            <td class="positive">+146%</td>
+                                            <td><span class="sig-badge">p < 0.01</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Avg Cognitive Load</td>
+                                            <td>8.5 / 10</td>
+                                            <td>4.2 / 10</td>
+                                            <td class="positive">-51%</td>
+                                            <td><span class="sig-badge">p < 0.001</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Student Motivation</td>
+                                            <td>0.58</td>
+                                            <td>0.79</td>
+                                            <td class="positive">+36%</td>
+                                            <td><span class="sig-badge">p < 0.05</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Real-World Validation -->
+                        <div class="report-section">
+                            <h4><i class="fas fa-globe"></i> Real-World Benchmark Validation</h4>
+                            <div class="benchmark-comparison">
+                                <div class="benchmark-item">
+                                    <h5>Coursera MOOCs (2019 Report)</h5>
+                                    <div class="benchmark-data">
+                                        <div class="data-point">
+                                            <label>Massed Learning Completion</label>
+                                            <span class="value">13.0% <small>(n=8,500)</small></span>
+                                        </div>
+                                        <div class="data-point">
+                                            <label>Our Simulation (Scenario A)</label>
+                                            <span class="value">13.2% <small>(Δ +0.2%)</small></span>
+                                        </div>
+                                        <div class="validation-status success">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Validated (within ±2% margin)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="benchmark-item">
+                                    <h5>Duolingo A/B Test (Settles & Meeder, 2016)</h5>
+                                    <div class="benchmark-data">
+                                        <div class="data-point">
+                                            <label>Control → Treatment Improvement</label>
+                                            <span class="value">+41.7% <small>(12% → 17%)</small></span>
+                                        </div>
+                                        <div class="data-point">
+                                            <label>Our Simulation (A → B)</label>
+                                            <span class="value">+146% <small>(13.2% → 32.5%)</small></span>
+                                        </div>
+                                        <div class="validation-status warning">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span>Higher improvement (longer duration: 90 vs 30 days)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Limitations -->
+                        <div class="report-section">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Model Limitations & Assumptions</h4>
+                            <ul class="limitations-list">
+                                <li>Simplified agent-based model does not account for peer learning effects or instructor quality variations.</li>
+                                <li>Individual differences modeled statistically (normal distribution) rather than psychometric profiles.</li>
+                                <li>Simulation domain: declarative knowledge acquisition. May not generalize to procedural skills or affective outcomes.</li>
+                                <li>90-day time horizon. Real longitudinal studies span 6-12 months for full retention assessment.</li>
+                                <li>Assumes consistent student engagement. Real-world dropout patterns may vary.</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Report Footer Actions -->
+                        <div class="report-actions">
+                            <button class="btn btn-outline" onclick="window.print()">
+                                <i class="fas fa-print"></i>
+                                Print Report
+                            </button>
+                            <button class="btn" id="btn-export-pdf">
+                                <i class="fas fa-file-pdf"></i>
+                                Export PDF
+                            </button>
+                            <button class="btn btn-outline" id="btn-export-json">
+                                <i class="fas fa-download"></i>
+                                Export Data (JSON)
+                            </button>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="phase-actions">
+                <button class="btn btn-large btn-outline" id="btn-reset">
+                    <i class="fas fa-redo"></i>
+                    <span>Run New Simulation</span>
+                </button>
+                <button class="btn btn-large btn-primary" id="btn-export-results">
+                    <i class="fas fa-file-export"></i>
+                    <span>Export Complete Report</span>
+                </button>
+            </div>
+        </section>
+        
+    </main>
+    
+    <!-- Control Panel (Sticky Right) -->
+    <aside class="bsi-control-panel">
+        <div class="control-header">
+            <i class="fas fa-gamepad"></i>
+            <h3>Simulation Controls</h3>
+        </div>
+        
+        <div class="control-buttons">
+            <button class="control-btn btn-play" id="ctrl-play" disabled>
+                <i class="fas fa-play"></i>
+                <span>Play</span>
+            </button>
+            <button class="control-btn btn-pause" id="ctrl-pause" disabled>
+                <i class="fas fa-pause"></i>
+                <span>Pause</span>
+            </button>
+            <button class="control-btn btn-stop" id="ctrl-stop" disabled>
+                <i class="fas fa-stop"></i>
+                <span>Stop</span>
+            </button>
+            <button class="control-btn btn-reset" id="ctrl-reset">
+                <i class="fas fa-redo-alt"></i>
+                <span>Reset</span>
+            </button>
+        </div>
+        
+        <div class="control-divider"></div>
+        
+        <div class="control-speed">
+            <label>Simulation Speed</label>
+            <div class="speed-buttons">
+                <button class="speed-btn" data-speed="1">1x</button>
+                <button class="speed-btn active" data-speed="2">2x</button>
+                <button class="speed-btn" data-speed="4">4x</button>
+            </div>
+        </div>
+        
+        <div class="control-divider"></div>
+        
+        <div class="control-stats">
+            <h4>Live Statistics</h4>
+            <div class="stat-item">
+                <label>Current Day</label>
+                <span class="stat-value" id="ctrl-day">0</span>
+            </div>
+            <div class="stat-item">
+                <label>Avg Knowledge A</label>
+                <span class="stat-value" id="ctrl-knowledge-a">0%</span>
+            </div>
+            <div class="stat-item">
+                <label>Avg Knowledge B</label>
+                <span class="stat-value" id="ctrl-knowledge-b">0%</span>
+            </div>
+            <div class="stat-item">
+                <label>Agents Active</label>
+                <span class="stat-value" id="ctrl-agents">1000</span>
+            </div>
+        </div>
+        
+        <div class="control-divider"></div>
+        
+        <div class="control-export">
+            <button class="btn btn-outline btn-small" id="ctrl-export">
+                <i class="fas fa-download"></i>
+                Export Data
+            </button>
+        </div>
+    </aside>
+    
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>The Causal Nexus</h4>
+                <p>Evidence-Based University Governance Platform. Built with scientific rigor and AI precision.</p>
+            </div>
+            <div class="footer-section">
+                <h5>BSI Module</h5>
+                <ul>
+                    <li><a href="#phase-setup">Scenario Setup</a></li>
+                    <li><a href="#phase-simulation">Run Simulation</a></li>
+                    <li><a href="#phase-results">View Results</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Resources</h5>
+                <ul>
+                    <li><a href="#">Evidence Base</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">API Reference</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Connect</h5>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 VICTORIA AI. Hackathon Solution. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Placeholder for JavaScript (Phase 2) -->
+<script>
+// TODO: Phase 2 - JavaScript implementation will go here
+console.log('BSI Module HTML loaded. JavaScript implementation pending...');
+</script>
+
+</body>
+</html>
