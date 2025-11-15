@@ -6,6 +6,11 @@
  * GET /api/projects/search.php?q=machine+learning&limit=20
  */
 
+// Suppress all PHP errors to ensure JSON-only output
+error_reporting(0);
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');

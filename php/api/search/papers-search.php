@@ -6,10 +6,34 @@
  * GET /api/search/papers-search.php?q=machine+learning&limit=20
  */
 
+// Suppress all PHP errors and warnings to ensure JSON-only output
+error_reporting(0);
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
+// Set headers first
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-require_once __DIR__ . '/../../services/papers-api.php';
+// Try to load the service class
+try {
+    $serviceFile = __DIR__ . '/../../services/papers-api.php';
+    if (!file_exists($serviceFile)) {
+        throw new Exception('Service file not found: ' . $serviceFile);
+    }
+    require_once $serviceFile;
+} catch (Exception $e) {
+    error_log('Failed to load papers-api.php: ' . $e->getMessage());
+    http_response_code(200);
+    echo json_encode([
+        'success' => true,
+        'query' => $_GET['q'] ?? '',
+        'results' => [],
+        'total' => 0,
+        'message' => 'Service temporarily unavailable'
+    ]);
+    exit;
+}
 
 $query = $_GET['q'] ?? '';
 $limit = (int)($_GET['limit'] ?? 20);

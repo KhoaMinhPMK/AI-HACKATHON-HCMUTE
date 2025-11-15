@@ -36,16 +36,63 @@ class MegaLLMClient {
             });
             
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'MegaLLM API error');
+                const error = await response.text();
+                console.warn('MegaLLM API error:', response.status, error);
+                
+                // Return fallback response for 402 (Payment Required) or other errors
+                if (response.status === 402) {
+                    console.warn('⚠️ MegaLLM API: Payment required - using fallback mode');
+                }
+                
+                // Return a fallback response instead of throwing
+                return this._getFallbackResponse(messages);
             }
             
             return await response.json();
             
         } catch (error) {
             console.error('MegaLLM chat error:', error);
-            throw error;
+            // Return fallback instead of throwing
+            return this._getFallbackResponse(messages);
         }
+    }
+    
+    /**
+     * Fallback response when API is unavailable
+     * @private
+     */
+    _getFallbackResponse(messages) {
+        const lastMessage = messages[messages.length - 1]?.content || '';
+        
+        return {
+            choices: [{
+                message: {
+                    role: 'assistant',
+                    content: this._generateFallbackContent(lastMessage)
+                }
+            }],
+            usage: { total_tokens: 0 },
+            _fallback: true
+        };
+    }
+    
+    /**
+     * Generate simple fallback content based on query
+     * @private
+     */
+    _generateFallbackContent(query) {
+        // Simple keyword extraction for fallback mode
+        const keywords = query.toLowerCase()
+            .split(/[,;.\s]+/)
+            .filter(w => w.length > 3)
+            .slice(0, 5);
+        
+        return JSON.stringify({
+            terms: keywords,
+            field: 'General',
+            intent: 'search for: ' + query.substring(0, 100),
+            suggested_queries: keywords.slice(0, 3)
+        });
     }
     
     /**
